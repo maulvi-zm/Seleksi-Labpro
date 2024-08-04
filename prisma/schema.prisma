@@ -4,11 +4,78 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model User {
+  user_id   String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  first_name String
+  last_name  String
+  balance   Float
+  role     Role     @default(USER)
+
+  filmWishList Film[] @relation("UsersWishList")
+  filmBought    Film[] @relation("UsersFilm")
+  Reviews       Review[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Review {
+  review_id Int     @id @default(autoincrement())
+  star      Int   
+  comment   String
+  user_id   String
+  film_id   String
+
+  User User @relation(fields: [user_id], references: [user_id])
+  Film Film @relation(fields: [film_id], references: [film_id])
+}
+
+model Film {
+  film_id       String   @id @default(uuid())
+  title         String
+  description   String
+  director_id   Int
+  release_year  Int
+  price         Float
+  duration      Int
+  cover_image_url   String
+  genres        Genre[]   @relation("FilmToGenre")
+  average_star  Float  @default(0)
+  review_count  Int    @default(0)
+  video_url       String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  Reviews       Review[]
+  Director      Director @relation(fields: [director_id], references: [director_id])
+  UsersWishList User[]   @relation("UsersWishList")
+  UsersFilm     User[]   @relation("UsersFilm")
+}
+
+model Director {
+  director_id   Int    @id @default(autoincrement())
+  name String
+  Film Film[]
+}
+
+model Genre {
+  genre_id   Int    @id @default(autoincrement())
+  name String
+
+  Film Film[] @relation("FilmToGenre")
 }
