@@ -17,8 +17,6 @@ import {
   Body,
   Param,
   Delete,
-  Patch,
-  ParseUUIDPipe,
   Query,
   UseGuards,
   Put,
