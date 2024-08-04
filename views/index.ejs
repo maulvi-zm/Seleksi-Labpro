@@ -2,40 +2,69 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Nest & EJS ❤</title>
-
-    <!-- CSS (load bootstrap from a CDN) -->
+    <title>Stream Vibe</title>
+    <link rel="stylesheet" href="/stylesheet/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css"
     />
-    <style>
-      body {
-        padding-top: 50px;
-      }
-    </style>
   </head>
-  <body class="container">
-    <header>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/about">About</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
+  <body class="bg-black h-screen m-0 font-manrope">
+    <header class="absolute top-0 w-full z-10">
+        <nav class="w-full h-28 px-9">
+          <div class="flex items-center h-full w-full px-4">
+            <div class="h-[60px] absolute">
+              <img src="/assets/logo.png" alt="logo" class="h-14"/>
+            </div>
+      
+            <div class="py-2 px-4 border-4 border-[#1f1f1f] bg-black flex space-x-4 items-center rounded-xl text-base mx-auto">
+              <a href="/" class="text-white px-2 py-2 bg-[#1f1f1f] rounded-xl">Home</a>
+              <a href="/films" class="text-white">Movies & Shows</a>
+              <a href="/my-films" class="text-white">My List</a>
+            </div>
+      
+            <div class="flex items-center absolute right-10">
+              <a href="/login" class="text-white mr-4">Login</a>
+            </div>
+          </div>
+        </nav>
+      </header>
+      
 
     <main>
-      <div class="jumbotron">
-        <h1><%= data.title %></h1>
-        <p><%= data.subtitle %></p>
+      <div class="fixed top-0 left-0 w-full h-full -z-10">
+        <img
+          src="/assets/index/background.png"
+          alt="background"
+          class="w-full h-full object-cover"
+        />
+      </div>
+
+      <div class="flex flex-col items-center justify-center h-screen w-screen text-center gap-8">
+        <img src="/assets/index/vector.png" alt="logo" class="w-96" />
+        <h1 class="text-white font-semibold text-xl">
+          The Best Streaming Experience
+        </h1>
+        <p class="text-[#999999] w-[50%] text-sm">
+          StreamVibe is the best streaming experience for watching your favorite movies and shows on demand, anytime, anywhere. With StreamVibe, you can enjoy a wide variety of content, including the latest blockbusters, classic movies, popular TV shows, and more. You can also create your own watchlists, so you can easily find the content you want to watch.
+        </p>
       </div>
     </main>
-    <img src="/logo.svg" />
-    <footer></footer>
+
+    <footer class="w-full h-20 bottom-0 absolute flex justify-around text-white items-center text-sm">
+      <div>
+        <p>
+            &#64 2024 Stream Vibe. All rights reserved.
+        </p>
+      </div>
+
+      <div class="flex space-x-6 gap-10">
+        <p>Terms of Use</p>
+        <p>Privacy Policy</p>
+        <p>Cookie Policy</p>
+      </div>
+    </footer>
   </body>
 </html>
