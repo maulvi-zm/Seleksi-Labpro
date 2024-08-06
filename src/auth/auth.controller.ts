@@ -12,11 +12,17 @@ import { LoginDto } from './dto/login.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthEntity } from './entities/auth.entity';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { UsersService } from 'src/users/users.service';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 @Controller()
 @ApiTags('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @Post('api/login')
   @ApiOkResponse({ type: AuthEntity })
@@ -54,5 +60,20 @@ export class AuthController {
   async logout(@Res() res) {
     res.clearCookie('token');
     res.redirect('/');
+  }
+
+  @Post('register')
+  @FormDataRequest({ storage: MemoryStoredFile })
+  async register(@Body() createUserDto: CreateUserDto, @Res() res) {
+    console.log(createUserDto);
+    try {
+      const user = await this.userService.create(createUserDto);
+
+      if (user) {
+        res.redirect('/login');
+      }
+    } catch (error) {
+      res.render('register', { message: error.message, status: 'error' });
+    }
   }
 }

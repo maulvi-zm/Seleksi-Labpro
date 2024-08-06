@@ -21,7 +21,7 @@ model User {
   email     String   @unique
   first_name String
   last_name  String
-  balance   Float
+  balance   Float   @default(0)
   role     Role     @default(USER)
 
   filmWishList Film[] @relation("UsersWishList")

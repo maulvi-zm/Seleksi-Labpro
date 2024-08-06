@@ -6,8 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [
@@ -18,6 +18,7 @@ import { UsersModule } from 'src/users/users.module';
       signOptions: { expiresIn: '1h' },
     }),
     UsersModule,
+    NestjsFormDataModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

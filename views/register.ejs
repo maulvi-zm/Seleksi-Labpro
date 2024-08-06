@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Stream Vibe</title>
+    <link rel="stylesheet" href="/stylesheet/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
+
+    <style>
+        sl-input {
+          --sl-input-border-color: gray;
+          --sl-input-border-color-focus: black;
+          --sl-input-label-color: white;
+          --sl-input-background-color: black;
+        }
+
+        sl-input::part(input) {
+          color: white;
+          background-color: black;
+        }
+
+        sl-input::part(password-toggle-button) {
+          background-color: black;
+        }
+      </style>
+
+  </head>
+  <body class="bg-black h-screen m-0 font-manrope">
+    <main>
+      <div class="fixed top-0 left-0 w-full h-full -z-10">
+        <img
+          src="/assets/index/background.png"
+          alt="background"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div class="bg-[#0f0f0f] mx-auto my-10 p-10 rounded-2xl space-y-8 w-[30%]">
+        <h1 class="text-white w-full text-center text-2xl">Register</h1>
+
+        <form action="/register" method="post" class="space-y-4 w-full" id='registerForm'>
+            <sl-input label="Email" help-text="Please fill your email" type="email" required name="email"></sl-input>
+            <sl-input label="Username" help-text="Please fill your username" required name="username"></sl-input>
+            <div class="grid grid-cols-2 space-x-4">
+                <sl-input label="First Name" help-text="Please fill your first name" required name="first_name"></sl-input>
+                <sl-input label="Last Name" help-text="Please fill your last name" required name="last_name"></sl-input>
+            </div>
+            <sl-input label="Password" help-text="Please fill your password" type="password" required name="password" minlength="8"></sl-input>
+            <sl-input label="Password" help-text="Please retype your password" type="password" required name="password_confirmation" minlength="8"></sl-input>
+            <div class="w-full flex justify-between items-center">
+                <a href="/login" class="text-red-700 underline">Already have an account?</a>
+                <button type="submit" class="bg-gray-200 text-white px-4 py-2 rounded-md font-semibold cursor-not-allowed" id="registerButton">Register</button>
+            </div>
+        </form>
+      </div>
+
+      
+    </main>
+
+    <footer class="w-full h-20 bottom-0 relative flex justify-around text-white items-center text-sm">
+      <div>
+        <p>
+            &#64 2024 Stream Vibe. All rights reserved.
+        </p>
+      </div>
+
+      <div class="flex space-x-6 gap-10">
+        <p>Terms of Use</p>
+        <p>Privacy Policy</p>
+        <p>Cookie Policy</p>
+      </div>
+    </footer>
+    
+    <% if (status === 'error') { %>
+      <script>
+        alert('<%= message %>');
+      </script>
+      <% } %>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const form = document.getElementById('registerForm');
+          const registerButton = document.getElementById('registerButton');
+    
+          form.addEventListener('input', function () {
+            const isValid = form.checkValidity();
+            registerButton.disabled = !isValid;
+            registerButton.style.cursor = isValid ? 'pointer' : 'not-allowed';
+
+            if (isValid) {
+                registerButton.classList.remove('bg-gray-200');
+                registerButton.classList.add('bg-red-700');
+            } else {
+                registerButton.classList.remove('bg-red-700');
+                registerButton.classList.add('bg-gray-200');
+            }
+          });
+    
+          form.addEventListener('submit', function (event) {
+            const password = form.querySelector('sl-input[name="password"]').value;
+            const passwordConfirmation = form.querySelector('sl-input[name="password_confirmation"]').value;
+    
+            if (password !== passwordConfirmation) {
+              alert("Passwords do not match.");
+              event.preventDefault();
+            }
+          });
+        });
+      </script>
+  </body>
+
+
+</html>

@@ -4,24 +4,51 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { UserResponseDto } from './dto/user-response.dto';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
+    if (
+      await this.prismaService.user.findUnique({
+        where: { username: createUserDto.username },
+      })
+    ) {
+      throw new Error('Username already exists');
+    }
+    if (
+      await this.prismaService.user.findUnique({
+        where: { email: createUserDto.email },
+      })
+    ) {
+      throw new Error('Email already exists');
+    }
+
+    if (createUserDto.password !== createUserDto.password_confirmation) {
+      throw new Error('Passwords do not match');
+    }
+
     const salt = bcrypt.genSaltSync(10);
     createUserDto.password = bcrypt.hashSync(createUserDto.password, salt);
 
+    const { password_confirmation, ...user } = createUserDto;
+
     return new UserResponseDto(
       await this.prismaService.user.create({
-        data: createUserDto,
+        data: {
+          ...user,
+        },
       }),
     );
   }
 
   async findAll() {
-    const users = await this.prismaService.user.findMany();
+    const users = await this.prismaService.user.findMany({
+      where: { role: Role.USER },
+    });
+
     return users.map((user) => new UserResponseDto(user));
   }
 
