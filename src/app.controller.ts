@@ -1,4 +1,4 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -7,7 +7,15 @@ export class AppController {
 
   @Get()
   @Render('index')
-  getHello(): object {
-    return { title: 'NestJS App', subtitle: 'Welcome to the NestJS App' };
+  getHello(@Req() req): object {
+    const isAuthenticated = req.cookies.token ? true : false;
+
+    return { isAuthenticated: isAuthenticated };
+  }
+
+  @Get('login')
+  @Render('login')
+  getLogin(): object {
+    return { title: 'NestJS App', subtitle: 'Login to the NestJS App' };
   }
 }

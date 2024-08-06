@@ -6,6 +6,7 @@ import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { CustomExceptionFilter } from './common/filters/CustomExceptionFilter';
 import { CustomResponseInterceptor } from './common/interceptors/CustomResponseInterceptor';
+import * as CookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -27,6 +28,14 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
+
+  app.use(CookieParser());
+
+  app.enableCors({
+    origin: ['https://labpro-fe.hmif.dev'],
+    methods: 'GET,HEAD,PUT,POST,DELETE',
+    credentials: true,
+  });
 
   await app.listen(3000);
 }

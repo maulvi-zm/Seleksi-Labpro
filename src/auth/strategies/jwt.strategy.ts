@@ -8,7 +8,16 @@ import { UsersService } from 'src/users/users.service';
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private usersService: UsersService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => {
+          let token = null;
+          if (req && req.cookies) {
+            token = req.cookies['token'];
+          }
+
+          return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+        },
+      ]),
       secretOrKey: process.env.JWT_SECRET,
     });
   }

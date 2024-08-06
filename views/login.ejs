@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Stream Vibe</title>
+    <link rel="stylesheet" href="/stylesheet/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
+
+    <style>
+        sl-input {
+          --sl-input-border-color: gray;
+          --sl-input-border-color-focus: black;
+          --sl-input-label-color: white;
+          --sl-input-background-color: black;
+        }
+
+        sl-input::part(input) {
+          color: white;
+          background-color: black;
+        }
+
+        sl-input::part(password-toggle-button) {
+          background-color: black;
+        }
+      </style>
+
+  </head>
+  <body class="bg-black h-screen m-0 font-manrope">
+    <main>
+      <div class="fixed top-0 left-0 w-full h-full -z-10">
+        <img
+          src="/assets/index/background.png"
+          alt="background"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div class="bg-[#0f0f0f] absolute -translate-y-1/2 top-1/2 -translate-x-1/2 left-1/2 p-10 rounded-2xl space-y-8 w-[30%]">
+        <h1 class="text-white w-full text-center text-2xl">Login</h1>
+
+        <form action="/login" method="post" class="space-y-4 w-full">
+            <sl-input label="Username" help-text="Please fill your username" required name="username"></sl-input>
+            <br>
+            <sl-input label="Password" help-text="Please fill your password" password-toggle type="password" required name="password"></sl-input>
+            <br>
+            <div class="w-full flex justify-end">
+                <button type="submit" class="bg-red-700 text-white px-4 py-2 rounded-md font-semibold">Login</button>
+            </div>
+        </form>
+      </div>
+
+      
+    </main>
+
+    <footer class="w-full h-20 bottom-0 absolute flex justify-around text-white items-center text-sm">
+      <div>
+        <p>
+            &#64 2024 Stream Vibe. All rights reserved.
+        </p>
+      </div>
+
+      <div class="flex space-x-6 gap-10">
+        <p>Terms of Use</p>
+        <p>Privacy Policy</p>
+        <p>Cookie Policy</p>
+      </div>
+    </footer>
+    
+    <% if (status === 'error') { %>
+      <script>
+        alert('<%= message %>');
+      </script>
+      <% } %>
+  </body>
+
+
+</html>
