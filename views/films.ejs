@@ -15,7 +15,7 @@
   </head>
 
   <body class="bg-[#141414] m-0 font-manrope min-h-screen flex flex-col">
-    <header class="sticky top-0 w-full z-10]">
+    <header class="sticky top-0 w-full z-20 bg-[#141414]">
         <nav class="w-full h-28 px-9">
           <div class="flex items-center h-full w-full px-4">
             <div class="h-[60px] absolute">
@@ -37,17 +37,17 @@
       
 
     <main class="max-w-4xl mx-auto flex-1">
-      <form>
-        <sl-input placeholder="Search" class="w-full">
-            <sl-icon slot="suffix" name="search"></sl-icon>
+      <form action="films" method="get">
+        <sl-input placeholder="Search" class="w-full" name="q" value="<%= data.q %>">
+          <sl-icon slot="suffix" name="search"></sl-icon>
         </sl-input>
       </form>
 
       <div>
-        <% if (data && data.length > 0) { %>
+        <% if (data.films && data.films.length > 0) { %>
             <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-8"> 
-            <% data.forEach(film => { %>
-              <li class="bg-[#1a1a1a] hover:shadow-2xl duration-300 group hover:scale-105 border border-[#262626] text-white rounded-xl cursor-pointer">
+            <% data.films.forEach(film => { %>
+              <li class="bg-[#1a1a1a] group hover:scale-105 border border-[#262626] text-white rounded-xl cursor-pointer transition-all">
                 <a href="/films/<%= film.id %>">
                     <figure class="w-full aspect-[4/3] bg-black rounded-t-xl">
                     <img src="<%= film.cover_image_url %>" alt="<%= film.title %>" class="aspect-[4/3] object-cover rounded-t-xl">
@@ -61,16 +61,47 @@
                         <% }); %>
                     </ul>
                     <p class="font-light text-sm italic">Directed by: <%= film.director %></p> 
-                    <p class="badge badge-neutral">🪙 <%= film.price %></p>
+                    <div class="flex justify-between">
+                      <p class="">🪙 <%= film.price %></p>
+                      <% if (film.review_count > 0) { %>
+                        <p class=""><%= film.average_star %> ⭐️ (<%= film.review_count %>)</p>
+                      <% } %>
+                    </div>
                     </div>
                 </a>
               </li>
             <% }); %>
             </ul>
           <% } else { %>
-            <p class="text-white">No films available.</p>
+            <p class="text-white w-full text-center my-9">No films available.</p>
           <% } %>
-      </div> 
+      </div>
+      
+      <nav class="w-full flex justify-center">
+        <ul class="flex gap-4 text-white">
+          <% if (data.page > 1) { %>
+            <li class="w-12 h-12 flex items-center justify-center border-[#262626] bg-black border rounded-md hover:brightness-125">
+              <a href="?q=<%= data.q %>&page=<%= data.page - 1 %>">
+                <sl-icon name="chevron-left"></sl-icon>
+              </a>
+            </li>
+          <% } %>
+
+          <% for (let i = 1; i <= Math.ceil(data.total / data.limit); i++) { %>
+            <li class="w-12 h-12 flex items-center justify-center border-[#262626] border rounded-md <% if (i === data.page) { %> bg-red-700 <% } else { %> bg-black <% } %> hover:brightness-125">
+              <a href="?q=<%= data.q %>&page=<%= i %>"><%= i %></a>
+            </li>
+          <% } %>
+
+          <% if (data.page < Math.ceil(data.total / data.limit)) { %>
+            <li class="w-12 h-12 flex items-center justify-center border-[#262626] bg-black border rounded-md hover:brightness-125">
+              <a href="?q=<%= data.q %>&page=<%= data.page + 1 %>">
+                <sl-icon name="chevron-right"></sl-icon>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
     </main>
 
     <footer class="w-full h-20 bottom-0 relative flex justify-around text-white items-center text-sm">

@@ -106,7 +106,15 @@ export class FilmsController {
   @Get('films')
   @UseGuards(JwtAuthGuard)
   @Render('films')
-  getFilms(): object {
-    return this.filmsService.findAll('');
+  getFilms(
+    @Query('q') q: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 9,
+  ): object {
+    q = q || '';
+    page = page || 1;
+    limit = limit || 9;
+
+    return this.filmsService.findAllwithPagination(q, page, limit);
   }
 }

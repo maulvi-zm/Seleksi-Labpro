@@ -213,4 +213,45 @@ export class FilmsService {
       }),
     );
   }
+
+  async findAllwithPagination(
+    q: string = '',
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const skip = (page - 1) * limit;
+
+    const [films, total] = await this.prismaService.$transaction([
+      this.prismaService.film.findMany({
+        where: {
+          OR: [
+            { title: { contains: q, mode: 'insensitive' } },
+            { Director: { name: { contains: q, mode: 'insensitive' } } },
+          ],
+        },
+        include: {
+          genres: true,
+          Director: true,
+        },
+        skip,
+        take: limit,
+      }),
+      this.prismaService.film.count({
+        where: {
+          OR: [
+            { title: { contains: q, mode: 'insensitive' } },
+            { Director: { name: { contains: q, mode: 'insensitive' } } },
+          ],
+        },
+      }),
+    ]);
+
+    return {
+      q,
+      films: films.map((film) => new FilmResponseDto(film)),
+      total,
+      page,
+      limit,
+    };
+  }
 }
