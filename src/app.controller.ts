@@ -1,8 +1,7 @@
-import { Controller, Get, Render, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Controller, Get, Render, Req, Res, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { AppService } from './app.service';
-import { get } from 'http';
-import { stat } from 'fs';
+import { JwtAuthGuard } from './auth/guards/jwt.guard';
 
 @Controller()
 export class AppController {

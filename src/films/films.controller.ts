@@ -20,6 +20,8 @@ import {
   Query,
   UseGuards,
   Put,
+  Render,
+  Req,
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -100,4 +102,11 @@ export class FilmsController {
   }
 
   /* Monolithic Endpoints */
+
+  @Get('films')
+  @UseGuards(JwtAuthGuard)
+  @Render('films')
+  getFilms(): object {
+    return this.filmsService.findAll('');
+  }
 }
