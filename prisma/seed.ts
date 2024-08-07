@@ -1,20 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 import * as bycrypt from 'bcrypt';
+import * as uuid from 'uuid';
+import * as fs from 'fs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const videoUrls = [
-    'https://pub-b74693bcb5c147fc949d81f1f9dea2fc.r2.dev/CT-S2-14-MP4HD-SAMEHADAKU.CARE.mp4',
-    'https://pub-b74693bcb5c147fc949d81f1f9dea2fc.r2.dev/JK-S2-19-MP4HD-SAMEHADAKU.CARE.mp4',
-    'https://pub-b74693bcb5c147fc949d81f1f9dea2fc.r2.dev/OP-1113-MP4HD-SAMEHADAKU.CARE.mp4',
-  ];
-
-  const coverUrls = [
-    'https://pub-b74693bcb5c147fc949d81f1f9dea2fc.r2.dev/captain-tsubasa.jpg',
-    'https://pub-b74693bcb5c147fc949d81f1f9dea2fc.r2.dev/jujutsu-kaisen.webp',
-    'https://pub-b74693bcb5c147fc949d81f1f9dea2fc.r2.dev/one-piece.jpg',
-  ];
+  const jsonPath =
+    '/Users/maulvizm/Documents/GitHub/Seleksi-Labpro/media/metadata.json';
+  const filmsMetadatas = fs.readFileSync(jsonPath, 'utf-8');
+  const films = JSON.parse(filmsMetadatas);
 
   const directors = await prisma.director.createMany({
     data: [
@@ -24,6 +19,19 @@ async function main() {
       { name: 'Eichiro Oda' },
       { name: 'Tite Kubo' },
       { name: 'Masashi Kishimoto' },
+      { name: 'Akira Toriyama' },
+      { name: 'Hayao Miyazaki' },
+      { name: 'Makoto Shinkai' },
+      { name: 'Hideaki Anno' },
+      { name: 'Mamoru Hosoda' },
+      { name: 'Satoshi Kon' },
+      { name: 'Mamoru Oshii' },
+      { name: 'Isao Takahata' },
+      { name: 'Katsuhiro Otomo' },
+      { name: 'Mamoru Hosoda' },
+      { name: 'Mamoru Oshii' },
+      { name: 'Isao Takahata' },
+      { name: 'Katsuhiro Otomo' },
     ],
   });
 
@@ -53,56 +61,6 @@ async function main() {
   });
 
   // Seeding Film
-  const films = [
-    {
-      film_id: 'uuid-film-1',
-      title: 'Captain Tsubasa',
-      description: 'A story about a football player.',
-      director_id: 1,
-      release_year: 2021,
-      price: 9.99,
-      duration: 120,
-      genres: {
-        connect: [{ genre_id: 4 }, { genre_id: 5 }],
-      },
-      cover_image_url: coverUrls[0],
-      average_star: 0,
-      review_count: 0,
-      video_url: videoUrls[0],
-    },
-    {
-      film_id: 'uuid-film-2',
-      title: 'Jujutsu Kaisen',
-      description: 'A story about a jujutsu sorcerer.',
-      director_id: 2,
-      release_year: 2022,
-      price: 11.99,
-      duration: 140,
-      genres: {
-        connect: [{ genre_id: 1 }, { genre_id: 2 }],
-      },
-      cover_image_url: coverUrls[1],
-      average_star: 0,
-      review_count: 0,
-      video_url: videoUrls[1],
-    },
-    {
-      film_id: 'uuid-film-3',
-      title: 'One Piece',
-      description: 'A story about a pirate.',
-      director_id: 3,
-      release_year: 2023,
-      price: 12.99,
-      duration: 160,
-      genres: {
-        connect: [{ genre_id: 1 }, { genre_id: 2 }],
-      },
-      cover_image_url: coverUrls[2],
-      average_star: 0,
-      review_count: 0,
-      video_url: videoUrls[2],
-    },
-  ];
 
   for (const film of films) {
     await prisma.film.create({
@@ -125,20 +83,40 @@ async function main() {
     });
   }
 
-  // Seeding User
-  for (let i = 1; i <= 6; i++) {
-    await prisma.user.create({
-      data: {
-        user_id: `uuid-user-` + i,
-        username: `user${i}`,
-        password: bycrypt.hashSync(`password`, 10),
-        email: `user${i}@example.com`,
-        first_name: `User`,
-        last_name: `${i}`,
-        balance: 100.0,
-      },
+  const users = [];
+
+  for (let i = 1; i <= 10; i++) {
+    users.push({
+      user_id: uuid.v4(),
+      username: `user${i}`,
+      password: bycrypt.hashSync(`password${i}`, 10),
+      email: `user${i}@example.com`,
+      first_name: `User`,
+      last_name: `${i}`,
+      balance: 100.0,
     });
   }
+
+  // Seeding User
+  for (let i = 0; i < users.length; i++) {
+    await prisma.user.create({
+      data: users[i],
+    });
+  }
+
+  // Add Admin
+  await prisma.user.create({
+    data: {
+      user_id: uuid.v4(),
+      username: `admin`,
+      password: bycrypt.hashSync(`password`, 10),
+      email: `admin@example.com`,
+      first_name: `Admin`,
+      last_name: `Admin`,
+      balance: 100.0,
+      role: 'ADMIN',
+    },
+  });
 
   //   // Seeding UsersWishList
   //   const wishlists = [

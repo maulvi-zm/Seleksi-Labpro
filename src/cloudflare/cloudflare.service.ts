@@ -3,8 +3,8 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  ListObjectsCommand,
 } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { MemoryStoredFile } from 'nestjs-form-data';
 
 @Injectable()
@@ -62,5 +62,22 @@ export class CloudflareService {
     } catch (error) {
       console.error('Failed to delete file', error);
     }
+  }
+
+  async deleteAll(): Promise<void> {
+    // delete all files in the bucket
+    const command = new ListObjectsCommand({
+      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+    });
+
+    const { Contents } = await this.s3Client.send(command);
+
+    if (Contents) {
+      for (const content of Contents) {
+        await this.deleteFile(content.Key);
+      }
+    }
+
+    return;
   }
 }
