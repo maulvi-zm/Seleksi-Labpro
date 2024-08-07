@@ -6,6 +6,7 @@ import {
   UseGuards,
   Request,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -15,6 +16,8 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
+import { TokenExpiredError } from 'jsonwebtoken';
+import { threadId } from 'worker_threads';
 
 @Controller()
 @ApiTags('auth')
@@ -59,13 +62,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async logout(@Res() res) {
     res.clearCookie('token');
-    res.redirect('/');
+    res.redirect('/login');
   }
 
   @Post('register')
   @FormDataRequest({ storage: MemoryStoredFile })
   async register(@Body() createUserDto: CreateUserDto, @Res() res) {
-    console.log(createUserDto);
     try {
       const user = await this.userService.create(createUserDto);
 

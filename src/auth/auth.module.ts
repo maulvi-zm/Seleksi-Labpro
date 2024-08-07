@@ -15,7 +15,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '1d' },
     }),
     UsersModule,
     NestjsFormDataModule,
