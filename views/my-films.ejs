@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" class="bg-[#1e1e1e]">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stream Vibe</title>
+    <link rel="stylesheet" href="/stylesheet/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
+    <link rel="stylesheet" href="/stylesheet/films.css" />
+  </head>
+
+  <body class="bg-[#141414] m-0 font-manrope min-h-screen flex flex-col">
+    <header class="sticky top-0 w-full z-10 bg-[#141414]">
+      <nav class="w-full h-28 px-9">
+        <div class="flex items-center h-full w-full px-4">
+          <div class="h-[48px] sm:h-[60px] absolute">
+            <img src="/assets/logo.png" alt="logo" class="h-12 sm:h-14" />
+          </div>
+  
+          <div class="py-2 px-4 border border-[#1f1f1f] bg-black hidden md:flex space-x-4 items-center rounded-xl text-base mx-auto text-white">
+            <a href="/">Home</a>
+            <a href="/films" >Movies & Shows</a>
+            <a href="/my-films" class="px-2 py-2 bg-[#1f1f1f] rounded-xl">My Films</a>
+          </div>
+  
+          <div class="md:flex items-center absolute right-10 hidden">
+            <sl-dropdown placement="bottom-end">
+              <sl-icon slot="trigger" name="person" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
+              <sl-menu class="bg-black">
+                <a href="/wishlist">
+                  <sl-menu-item>Wishlist</sl-menu-item>
+                </a>
+                <a href="/logout">
+                  <sl-menu-item>Log Out</sl-menu-item>
+                </a>
+              </sl-menu>
+            </sl-dropdown>
+          </div>
+  
+          <div class="absolute right-10 flex md:hidden">
+            <sl-dropdown placement="bottom-end" class="text-white">
+              <sl-icon slot="trigger" name="list" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
+              <sl-menu class="bg-black">
+                <a href="/">
+                  <sl-menu-item>Home</sl-menu-item>
+                </a>
+                <a href="/films">
+                  <sl-menu-item>Movies & Shows</sl-menu-item>
+                </a>
+                <a href="/my-films">
+                  <sl-menu-item>My Films</sl-menu-item>
+                </a>
+                <sl-divider class="border-t-[1px] border-[#1f1f1f]"></sl-divider>
+                <a href="/wishlist">
+                  <sl-menu-item>Wishlist</sl-menu-item>
+                </a>
+                <a href="/logout">
+                  <sl-menu-item>Log Out</sl-menu-item>
+                </a>
+              </sl-menu>
+            </sl-dropdown>
+          </div>
+        </div>
+      </nav>
+    </header>
+      
+      
+
+    <main class="max-w-4xl lg:mx-auto flex-1 mx-8">
+      <form action="films" method="get">
+        <sl-input placeholder="Search" class="w-full" name="q" value="<%= data.q %>">
+          <sl-icon slot="suffix" name="search"></sl-icon>
+        </sl-input>
+      </form>
+
+      <div>
+        <% if (data.films && data.films.length > 0) { %>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-8"> 
+            <% data.films.forEach(film => { %>
+              <li class="bg-[#1a1a1a] group hover:scale-105 border border-[#262626] text-white rounded-xl cursor-pointer transition-all">
+                <a href="/films/<%= film.id %>">
+                    <figure class="w-full aspect-[4/3] bg-black rounded-t-xl">
+                    <img src="<%= film.cover_image_url %>" alt="<%= film.title %>" class="aspect-[4/3] object-cover rounded-t-xl">
+                    </figure> 
+                    <div class="p-4 flex flex-col gap-2">
+                    <h2 class="card-title"><%= film.title %> (<%= film.release_year %>)</h2>
+                    <p class="text-xs -mt-2 font-light mb-2"><%= Math.floor(film.duration / 60).toString().padStart(2, '0') %>:<%= (film.duration % 60).toString().padStart(2, '0') %>:00</p> 
+                    <ul class="flex flex-wrap gap-x-1">
+                        <% film.genre.forEach(genre => { %>
+                        <sl-badge variant="neutral" class="font-medium" pill><%= genre %></sl-badge>
+                        <% }); %>
+                    </ul>
+                    <p class="font-light text-sm italic">Directed by: <%= film.director %></p> 
+                    <div class="flex justify-between">
+                      <p class="">🪙 <%= film.price %></p>
+                      <% if (film.review_count > 0) { %>
+                        <p class=""><%= film.average_star.toFixed(2) %> ⭐️ (<%= film.review_count %>)</p>
+                      <% } %>
+                    </div>
+                    </div>
+                </a>
+              </li>
+            <% }); %>
+            </ul>
+          <% } else { %>
+            <p class="text-white w-full text-center my-9">No films available.</p>
+          <% } %>
+      </div>
+      
+      <nav class="w-full flex justify-center">
+        <ul class="flex gap-4 text-white">
+          <% if (data.page > 1) { %>
+            <li class="w-12 h-12 flex items-center justify-center border-[#262626] bg-black border rounded-md hover:brightness-125">
+              <a href="?q=<%= data.q %>&page=<%= data.page - 1 %>">
+                <sl-icon name="chevron-left"></sl-icon>
+              </a>
+            </li>
+          <% } %>
+
+          <% for (let i = 1; i <= Math.ceil(data.total / data.limit); i++) { %>
+            <li class="w-12 h-12 flex items-center justify-center border-[#262626] border rounded-md <% if (i === data.page) { %> bg-red-700 <% } else { %> bg-black <% } %> hover:brightness-125">
+              <a href="?q=<%= data.q %>&page=<%= i %>"><%= i %></a>
+            </li>
+          <% } %>
+
+          <% if (data.page < Math.ceil(data.total / data.limit)) { %>
+            <li class="w-12 h-12 flex items-center justify-center border-[#262626] bg-black border rounded-md hover:brightness-125">
+              <a href="?q=<%= data.q %>&page=<%= data.page + 1 %>">
+                <sl-icon name="chevron-right"></sl-icon>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="w-full h-20 bottom-0 relative flex flex-col md:flex-row justify-around text-white items-center text-xs sm:text-sm mt-8 md:mt-0">
+      <div>
+        <p>
+          &#64 2024 Stream Vibe. All rights reserved.
+        </p>
+      </div>
+  
+      <div class="flex items-center sm:space-x-6 gap-4 sm:gap-10">
+        <p>Terms of Use</p>
+        <p>Privacy Policy</p>
+        <p>Cookie Policy</p>
+      </div>
+    </footer>
+  </body>
+</html>
