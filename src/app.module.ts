@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { FilmsModule } from './films/films.module';
 import { CloudflareModule } from './cloudflare/cloudflare.module';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
-import { TokenExpirationMiddleware } from './auth/middleware/TokenExpirationMiddleware';
+import { TokenExpirationMiddleware } from './common/middleware/TokenExpirationMiddleware';
 
 @Module({
   imports: [
@@ -34,7 +34,8 @@ export class AppModule implements NestModule {
       .apply(TokenExpirationMiddleware)
       .forRoutes(
         { path: 'logout', method: RequestMethod.GET },
-        { path: '*', method: RequestMethod.ALL },
+        { path: 'films/*', method: RequestMethod.ALL },
+        { path: 'my-films', method: RequestMethod.ALL },
       );
   }
 }
