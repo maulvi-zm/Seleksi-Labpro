@@ -40,6 +40,7 @@ model Review {
   comment   String
   user_id   String
   film_id   String
+  created_at DateTime @default(now())
 
   User User @relation(fields: [user_id], references: [user_id])
   Film Film @relation(fields: [film_id], references: [film_id])

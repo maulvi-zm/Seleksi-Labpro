@@ -134,51 +134,51 @@ async function main() {
   //     });
   //   }
 
-  //   // Seeding Reviews
-  //   const reviews = [
-  //     {
-  //       star: 5,
-  //       comment: 'Amazing movie!',
-  //       user_id: 'uuid-1',
-  //       film_id: 'uuid-film-1',
-  //     },
-  //     {
-  //       star: 4,
-  //       comment: 'Really enjoyed it!',
-  //       user_id: 'uuid-2',
-  //       film_id: 'uuid-film-2',
-  //     },
-  //     {
-  //       star: 5,
-  //       comment: 'Outstanding!',
-  //       user_id: 'uuid-3',
-  //       film_id: 'uuid-film-3',
-  //     },
-  //     {
-  //       star: 3,
-  //       comment: 'It was okay.',
-  //       user_id: 'uuid-4',
-  //       film_id: 'uuid-film-1',
-  //     },
-  //     {
-  //       star: 4,
-  //       comment: 'Pretty good.',
-  //       user_id: 'uuid-5',
-  //       film_id: 'uuid-film-2',
-  //     },
-  //     {
-  //       star: 5,
-  //       comment: 'Loved it!',
-  //       user_id: 'uuid-6',
-  //       film_id: 'uuid-film-3',
-  //     },
-  //   ];
+  // Seeding Reviews
+  const reviews = [
+    {
+      star: 5,
+      comment: 'Amazing movie!',
+      user_id: users[0].user_id,
+      film_id: 'uuid-film-1',
+    },
+    {
+      star: 4,
+      comment: 'Really enjoyed it!',
+      user_id: users[1].user_id,
+      film_id: 'uuid-film-2',
+    },
+    {
+      star: 5,
+      comment: 'Outstanding!',
+      user_id: users[2].user_id,
+      film_id: 'uuid-film-3',
+    },
+    {
+      star: 3,
+      comment: 'It was okay.',
+      user_id: users[3].user_id,
+      film_id: 'uuid-film-3',
+    },
+    {
+      star: 4,
+      comment: 'Pretty good.',
+      user_id: users[4].user_id,
+      film_id: 'uuid-film-2',
+    },
+    {
+      star: 5,
+      comment: 'Loved it!',
+      user_id: users[5].user_id,
+      film_id: 'uuid-film-3',
+    },
+  ];
 
-  //   for (const review of reviews) {
-  //     await prisma.review.create({
-  //       data: review,
-  //     });
-  //   }
+  for (const review of reviews) {
+    await prisma.review.create({
+      data: review,
+    });
+  }
 
   //   console.log('Seeding selesai');
 }
