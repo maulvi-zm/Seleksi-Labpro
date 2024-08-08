@@ -1,0 +1,8 @@
+sl-menu-item::part(label) {
+  color: white;
+}
+sl-badge::part(base) {
+  background-color: #141414;
+  border-color: #262626;
+  color: white;
+}

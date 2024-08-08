@@ -2,6 +2,7 @@
 <html lang="en" class="bg-[#1e1e1e]">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Stream Vibe</title>
     <link rel="stylesheet" href="/stylesheet/output.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,31 +13,66 @@
     />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
+    <link rel="stylesheet" href="/stylesheet/films.css" />
   </head>
 
   <body class="bg-[#141414] m-0 font-manrope min-h-screen flex flex-col">
-    <header class="sticky top-0 w-full z-20 bg-[#141414]">
-        <nav class="w-full h-28 px-9">
-          <div class="flex items-center h-full w-full px-4">
-            <div class="h-[60px] absolute">
-              <img src="/assets/logo.png" alt="logo" class="h-14"/>
-            </div>
-      
-              <div class="py-2 px-4 border border-[#1f1f1f] bg-black flex space-x-4 items-center rounded-xl text-base mx-auto">
-                <a href="/" class="text-white">Home</a>
-                <a href="/films" class="text-white px-2 py-2 bg-[#1f1f1f] rounded-xl">Movies & Shows</a>
-                <a href="/my-films" class="text-white">My List</a>
-              </div>
-      
-            <div class="flex items-center absolute right-10">
-                <a href="/logout" class="text-white">Logout</a>
-            </div>
+    <header class="sticky top-0 w-full z-10 bg-[#141414]">
+      <nav class="w-full h-28 px-9">
+        <div class="flex items-center h-full w-full px-4">
+          <div class="h-[48px] sm:h-[60px] absolute">
+            <img src="/assets/logo.png" alt="logo" class="h-12 sm:h-14" />
           </div>
-        </nav>
-      </header>
+  
+          <div class="py-2 px-4 border border-[#1f1f1f] bg-black hidden md:flex space-x-4 items-center rounded-xl text-base mx-auto text-white">
+            <a href="/">Home</a>
+            <a href="/films" class="px-2 py-2 bg-[#1f1f1f] rounded-xl" >Movies & Shows</a>
+            <a href="/my-films">My Films</a>
+          </div>
+  
+          <div class="md:flex items-center absolute right-10 hidden">
+            <sl-dropdown placement="bottom-end">
+              <sl-icon slot="trigger" name="person" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
+              <sl-menu class="bg-black">
+                <a href="/wishlist">
+                  <sl-menu-item>Wishlist</sl-menu-item>
+                </a>
+                <a href="/logout">
+                  <sl-menu-item>Log Out</sl-menu-item>
+                </a>
+              </sl-menu>
+            </sl-dropdown>
+          </div>
+  
+          <div class="absolute right-10 flex md:hidden">
+            <sl-dropdown placement="bottom-end" class="text-white">
+              <sl-icon slot="trigger" name="list" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
+              <sl-menu class="bg-black">
+                <a href="/">
+                  <sl-menu-item>Home</sl-menu-item>
+                </a>
+                <a href="/films">
+                  <sl-menu-item>Movies & Shows</sl-menu-item>
+                </a>
+                <a href="/my-films">
+                  <sl-menu-item>My Films</sl-menu-item>
+                </a>
+                <sl-divider class="border-t-[1px] border-[#1f1f1f]"></sl-divider>
+                <a href="/wishlist">
+                  <sl-menu-item>Wishlist</sl-menu-item>
+                </a>
+                <a href="/logout">
+                  <sl-menu-item>Log Out</sl-menu-item>
+                </a>
+              </sl-menu>
+            </sl-dropdown>
+          </div>
+        </div>
+      </nav>
+    </header>
       
 
-    <main class="max-w-4xl mx-auto flex-1">
+    <main class="max-w-4xl lg:mx-auto flex-1 mx-8">
       <form action="films" method="get">
         <sl-input placeholder="Search" class="w-full" name="q" value="<%= data.q %>">
           <sl-icon slot="suffix" name="search"></sl-icon>
@@ -64,7 +100,7 @@
                     <div class="flex justify-between">
                       <p class="">🪙 <%= film.price %></p>
                       <% if (film.review_count > 0) { %>
-                        <p class=""><%= film.average_star %> ⭐️ (<%= film.review_count %>)</p>
+                        <p class=""><%= film.average_star.toFixed(2) %> ⭐️ (<%= film.review_count %>)</p>
                       <% } %>
                     </div>
                     </div>
@@ -104,14 +140,14 @@
       </nav>
     </main>
 
-    <footer class="w-full h-20 bottom-0 relative flex justify-around text-white items-center text-sm">
+    <footer class="w-full h-20 bottom-0 relative flex flex-col md:flex-row justify-around text-white items-center text-xs sm:text-sm mt-8 md:mt-0">
       <div>
         <p>
-            &#64 2024 Stream Vibe. All rights reserved.
+          &#64 2024 Stream Vibe. All rights reserved.
         </p>
       </div>
-
-      <div class="flex space-x-6 gap-10">
+  
+      <div class="flex items-center sm:space-x-6 gap-4 sm:gap-10">
         <p>Terms of Use</p>
         <p>Privacy Policy</p>
         <p>Cookie Policy</p>
