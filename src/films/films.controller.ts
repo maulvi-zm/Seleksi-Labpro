@@ -22,12 +22,14 @@ import {
   Put,
   Render,
   Req,
+  Res,
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
 import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorator/roles.decorator';
+import { AddReviewDto } from './dto/add-review.dto';
 
 @ApiTags('films')
 @Controller()
@@ -116,5 +118,110 @@ export class FilmsController {
     limit = limit || 9;
 
     return this.filmsService.findAllwithPagination(q, page, limit);
+  }
+
+  @Get('my-films')
+  @UseGuards(JwtAuthGuard)
+  @Render('my-films')
+  getMyFilms(
+    @Req() req: any,
+    @Query('q') q: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 9,
+  ): object {
+    q = q || '';
+    page = page || 1;
+    limit = limit || 9;
+
+    const userId = req.user.id;
+
+    return this.filmsService.findAllwithPagination(q, page, limit, userId);
+  }
+
+  @Get('films/:id')
+  @UseGuards(JwtAuthGuard)
+  @Render('film-details')
+  async getFilm(@Param('id') id: string, @Req() req): Promise<object> {
+    const film = await this.filmsService.findOne(id);
+    const reviews = await this.filmsService.getReviews(id);
+    const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
+    const isWishlisted = await this.filmsService.isWishlisted(id, req.user.id);
+
+    const formattedReviews = reviews.map((review) => {
+      return {
+        ...review,
+        created_at: review.created_at.toISOString(),
+      };
+    });
+
+    const data = {
+      ...film,
+      reviews: formattedReviews,
+      isPurchased,
+      isWishlisted,
+    };
+
+    return data;
+  }
+
+  @Post('films/:id/review')
+  @UseGuards(JwtAuthGuard)
+  @FormDataRequest({ storage: MemoryStoredFile })
+  addReview(
+    @Param('id') id: string,
+    @Body() addReviewDto: AddReviewDto,
+    @Req() req: any,
+    @Res() res: any,
+  ): object {
+    // Check if the id is the same as the request referrer
+    if (req.headers.referer.split('/').pop() !== id) {
+      throw new Error('Invalid request');
+    }
+
+    try {
+      return this.filmsService.addReview(
+        id,
+        addReviewDto.rating,
+        addReviewDto.review,
+        req.user.id,
+      );
+    } catch (error) {
+      res.status(400).send({ status: 'error', message: error.message });
+    }
+  }
+
+  @Post('films/:id/buy')
+  @UseGuards(JwtAuthGuard)
+  buyFilm(@Param('id') id: string, @Req() req: any): object {
+    // Check if the id is the same as the request referrer
+    if (req.headers.referer.split('/').pop() !== id) {
+      throw new Error('Invalid request');
+    }
+
+    return this.filmsService.buyFilm(id, req.user.id);
+  }
+
+  @Post('films/:id/wishlist')
+  @UseGuards(JwtAuthGuard)
+  addWishlist(@Param('id') id: string, @Req() req: any): object {
+    if (req.headers.referer.split('/').pop() !== id) {
+      throw new Error('Invalid request');
+    }
+
+    return this.filmsService.addWishlist(id, req.user.id);
+  }
+
+  @Get('films/:id/watch')
+  @UseGuards(JwtAuthGuard)
+  @Render('watch-film')
+  async watchFilm(@Param('id') id: string, @Req() req): Promise<object> {
+    const film = await this.filmsService.findOne(id);
+    const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
+
+    if (!isPurchased) {
+      return;
+    }
+
+    return { video_url: film.video_url };
   }
 }

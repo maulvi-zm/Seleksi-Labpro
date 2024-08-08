@@ -8,6 +8,7 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudflareService } from 'src/cloudflare/cloudflare.service';
 import { FilmResponseDto } from './dto/film-response.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class FilmsService {
@@ -217,31 +218,32 @@ export class FilmsService {
   async findAllwithPagination(
     q: string = '',
     page: number = 1,
-    limit: number = 10,
+    limit: number = 9,
+    user_id?: string,
   ) {
     const skip = (page - 1) * limit;
+
+    const userCondition = user_id ? { UsersFilm: { some: { user_id } } } : {};
+
+    const searchCondition = {
+      OR: [
+        { title: { contains: q, mode: 'insensitive' } },
+        { Director: { name: { contains: q, mode: 'insensitive' } } },
+      ],
+    } satisfies Prisma.FilmWhereInput;
 
     const [films, total] = await this.prismaService.$transaction([
       this.prismaService.film.findMany({
         where: {
-          OR: [
-            { title: { contains: q, mode: 'insensitive' } },
-            { Director: { name: { contains: q, mode: 'insensitive' } } },
-          ],
-        },
-        include: {
-          genres: true,
-          Director: true,
+          AND: [userCondition, searchCondition],
         },
         skip,
         take: limit,
+        include: { Director: true, genres: true },
       }),
       this.prismaService.film.count({
         where: {
-          OR: [
-            { title: { contains: q, mode: 'insensitive' } },
-            { Director: { name: { contains: q, mode: 'insensitive' } } },
-          ],
+          AND: [userCondition, searchCondition],
         },
       }),
     ]);
@@ -253,5 +255,151 @@ export class FilmsService {
       page,
       limit,
     };
+  }
+
+  async addReview(
+    filmId: string,
+    star: number,
+    review: string,
+    user_id: string,
+  ) {
+    const film = await this.prismaService.film.findUnique({
+      where: { film_id: filmId },
+    });
+
+    if (!film) {
+      throw new NotFoundException('Film not found');
+    }
+
+    const reviewResult = await this.prismaService.review.create({
+      data: {
+        comment: review,
+        star,
+        user_id: user_id,
+        film_id: filmId,
+      },
+    });
+
+    return reviewResult;
+  }
+
+  async getReviews(filmId: string) {
+    // Select reviews for the film with username and exclude user id and film id
+    const reviews = await this.prismaService.review.findMany({
+      where: { film_id: filmId },
+      select: {
+        star: true,
+        comment: true,
+        created_at: true,
+        User: { select: { username: true } },
+      },
+      orderBy: { created_at: 'desc' },
+    });
+
+    return reviews;
+  }
+
+  async buyFilm(filmId: string, user_id: string) {
+    const film = await this.prismaService.film.findUnique({
+      where: { film_id: filmId },
+    });
+
+    if (!film) {
+      throw new NotFoundException('Film not found');
+    }
+
+    const user = await this.prismaService.user.findUnique({
+      where: { user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.balance < film.price) {
+      throw new BadRequestException('Insufficient balance');
+    }
+
+    const updatedUser = await this.prismaService.user.update({
+      where: { user_id },
+      data: {
+        balance: {
+          decrement: film.price,
+        },
+        filmBought: {
+          connect: { film_id: filmId },
+        },
+      },
+    });
+
+    return updatedUser;
+  }
+
+  async isPurchased(filmId: string, user_id: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { user_id },
+      include: {
+        filmBought: {
+          where: { film_id: filmId },
+        },
+      },
+    });
+
+    return user.filmBought.length > 0;
+  }
+
+  async addWishlist(filmId: string, user_id: string) {
+    const film = await this.prismaService.film.findUnique({
+      where: { film_id: filmId },
+    });
+
+    if (!film) {
+      throw new NotFoundException('Film not found');
+    }
+
+    const user = await this.prismaService.user.findUnique({
+      where: { user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (await this.isWishlisted(filmId, user_id)) {
+      // Remove from wishlist
+      const updatedUser = await this.prismaService.user.update({
+        where: { user_id },
+        data: {
+          filmWishList: {
+            disconnect: { film_id: filmId },
+          },
+        },
+      });
+
+      return false;
+    }
+    const updatedUser = await this.prismaService.user.update({
+      where: { user_id },
+      data: {
+        filmWishList: {
+          connect: { film_id: filmId },
+        },
+      },
+    });
+
+    return true;
+  }
+
+  async isWishlisted(filmId: string, user_id: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { user_id },
+      include: {
+        filmWishList: {
+          where: { film_id: filmId },
+        },
+      },
+    });
+
+    return user.filmWishList.length > 0;
   }
 }
