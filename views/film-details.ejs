@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stream Vibe</title>
+  <link rel="stylesheet" href="/stylesheet/output.css" />
+  <link rel="stylesheet" href="/stylesheet/film-details.css" /> <!-- Custom CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
+  <script src="/scripts/film-details.js" defer></script> <!-- Custom JS -->
+</head>
+<body class="bg-[#141414] h-screen m-0 font-manrope min-h-screen">
+  <header class="sticky top-0 w-full z-20 bg-[#141414]">
+    <nav class="w-full h-28 px-9">
+      <div class="flex items-center h-full w-full px-4">
+        <div class="h-[60px] absolute">
+          <img src="/assets/logo.png" alt="logo" class="h-14" />
+        </div>
+        <div class="py-2 px-4 border border-[#1f1f1f] bg-black flex space-x-4 items-center rounded-xl text-base mx-auto">
+          <a href="/" class="text-white">Home</a>
+          <a href="/films" class="text-white px-2 py-2 bg-[#1f1f1f] rounded-xl">Movies & Shows</a>
+          <a href="/my-films" class="text-white">My Films</a>
+        </div>
+        <div class="flex items-center absolute right-10">
+          <sl-dropdown placement="bottom-end">
+            <sl-icon slot="trigger" name="person" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
+            <sl-menu class="bg-black">
+              <a href="/wishlist">
+                <sl-menu-item>Wishlist</sl-menu-item>
+              </a>
+              <a href="/logout">
+                <sl-menu-item>Log Out</sl-menu-item>
+              </a>
+            </sl-menu>
+          </sl-dropdown>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main class="min-h-screen max-w-4xl flex flex-col items-center mx-auto gap-8 mt-8">
+    <div class="aspect-video bg-cover w-full rounded-xl text-white flex flex-col gap-12 justify-end items-center p-6 bg-center" style="background-image: linear-gradient(0deg, #141414 0%, rgba(20, 20, 20, 0) 100%), url('<%= data.cover_image_url %>');">
+      <div class="flex flex-col gap-4 items-center">
+        <h1 class="font-bold text-xl">
+          <%= data.title %>
+        </h1>
+        <p class="text-[#999999] text-sm">
+          <%= data.description %>
+        </p>
+      </div>
+      <div class="flex gap-4">
+        <% if (data.isPurchased) { %>
+        <button id='playButton' class="px-4 py-1 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
+          <sl-icon name='play' class="text-xl"></sl-icon>
+          <span>
+            Play Now
+          </span>
+        </button>
+        <script>
+          document.getElementById('playButton').addEventListener('click', () => {
+            window.location.href = '/films/<%= data.id %>/watch';
+          });
+        </script>
+        <% } else { %>
+        <button id="buyButton" class="px-4 py-1 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
+          <sl-icon name='bag' class="text-xl"></sl-icon>
+          <span>
+            Buy Now
+          </span>
+        </button>
+        <script>
+          document.getElementById('buyButton').addEventListener('click', async () => {
+            try {
+              const response = await fetch('/films/<%= data.id %>/buy', {
+                method: 'POST',
+              });
+              const data = await response.json();
+              if (data.status === 'success') {
+                alert('Purchase successful!');
+                location.reload();
+              } else {
+                alert('Purchase failed.');
+              }
+            } catch (error) {
+              console.error('Error purchasing video:', error);
+              alert('An error occurred.');
+            }
+          });
+        </script>
+        <% } %>
+        <button id="wishlistButton" class="px-1 py-1 <% if (data.isWishlisted) {%> bg-red-700 <% } else { %> bg-black <% } %> border border-[#262626] rounded-lg flex items-center justify-center transition-all">
+          <sl-icon name="<%  if (data.isWishlisted) { %>check<% } else { %>plus<% } %>" class="text-3xl text-white" id="wishlistIcon"></sl-icon>
+        </button>
+
+        <script>
+          document
+            .getElementById('wishlistButton')
+            .addEventListener('click', async () => {
+              try {
+                const response = await fetch('<%= data.id %>/wishlist', {
+                  method: 'POST',
+                });
+                
+                const result = await response.json();
+
+                const icon = document.getElementById('wishlistIcon');
+                const button = document.getElementById('wishlistButton');
+
+                if (result.data) {
+                  icon.name = 'check';
+                  button.classList.add('bg-red-700');
+                  button.classList.remove('bg-black');
+                } else {
+                  icon.name = 'plus';
+                  button.classList.remove('bg-red-700');
+                  button.classList.add('bg-black');
+                }
+              } catch (error) {
+                console.error('Error adding to wishlist:', error);
+                alert('An error occurred.');
+              }
+            });
+        </script>
+      </div>
+    </div>
+    <div class="flex w-full gap-8">
+      <div class="w-2/3 flex flex-col gap-4">
+        <div class="bg-[#1a1a1a] border border-[#262626] rounded-xl p-6 space-y-2">
+          <h2 class="text-[#999999]">Description</h2>
+          <p class="text-white text-sm">
+            <%= data.description %>
+          </p>
+        </div>
+        <div class="bg-[#1a1a1a] border border-[#262626] rounded-xl p-6 space-y-2">
+          <div class="flex justify-between items-center">
+            <h2 class="text-[#999999]">Reviews</h2>
+            <sl-dialog label="Write a review" class="dialog-overview text-white">
+              <form class="flex flex-col gap-4" action="<%= data.id %>/review" method="post" id="review-form">
+                <sl-rating label="Rating" name="rating" id="rating" precision="0.5"></sl-rating>
+                <sl-textarea label="Review:" name="review" class="text-white"></sl-textarea>
+                <sl-button slot="footer" variant="danger" type="submit">Submit</sl-button>
+              </form>
+            </sl-dialog>
+            <sl-button class="bg-[#141414]">
+              <sl-icon name="plus" class="text-2xl" slot="prefix"></sl-icon>
+              <span>
+                Add your review
+              </span>
+            </sl-button>
+          </div>
+          <% if (data.review_count > 0) { %>
+          <ul class="space-y-4">
+            <% data.reviews.forEach(review => { %>
+            <li class="bg-[#141414] border border-[#262626] rounded-xl p-6 flex flex-col gap-2">
+              <div class="flex justify-between items-center">
+                <div class="flex flex-col">
+                  <h3 class="text-white text-sm">
+                    <%= review.User.username %>
+                  </h3>
+                  <sl-relative-time date="<%= review.created_at %>" class="text-[#999999] text-sm">
+                </div>
+                <sl-rating label="Rating" readonly value="<%= review.star %>" precision style="--symbol-size: 1rem"></sl-rating>
+              </div>
+              <p class="text-white text-sm">
+                <%= review.comment %>
+              </p>
+            </li>
+            <% }); %>
+            <% } else { %>
+            <p class="text-white text-sm w-full text-center">
+              No reviews yet.
+            </p>
+            <% } %>
+          </div>
+        </div>
+        <div class="w-1/3 bg-[#1a1a1a] border border-[#262626] rounded-xl p-6 flex flex-col gap-8 h-fit">
+          <div class="space-y-2">
+            <div class="flex gap-2 items-center">
+              <sl-icon name="calendar4" class="text-[#999999]"></sl-icon>
+              <h2 class="text-[#999999]">Released Year</h2>
+            </div>
+            <p class="text-white text-sm">
+              <%= data.release_year %>
+            </p>
+          </div>
+          <div class="space-y-2">
+            <div class="flex gap-2 items-center">
+              <sl-icon name="star" class="text-[#999999]"></sl-icon>
+              <h2 class="text-[#999999]">Ratings</h2>
+            </div>
+            <div class="flex items-center">
+              <sl-rating label="Rating" readonly value="<%= data.average_star %>" precision></sl-rating>
+              <span class="text-white text-sm">
+                (<%= data.review_count %>)
+              </span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="flex gap-2 items-center">
+              <sl-icon name="grid" class="text-[#999999]"></sl-icon>
+              <h2 class="text-[#999999]">Genres</h2>
+            </div>
+            <ul class="flex flex-wrap gap-x-1">
+              <% data.genre.forEach(genre => { %>
+              <sl-badge class="font-medium" pill><%= genre %></sl-badge>
+              <% }); %>
+            </ul>
+          </div>
+          <div class="space-y-2">
+            <h2 class="text-[#999999]">Director</h2>
+            <p class="text-white text-sm">
+              <%= data.director %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="w-full h-20 bottom-0 relative flex justify-around text-white items-center text-sm">
+    <div>
+      <p>
+        &#64 2024 Stream Vibe. All rights reserved.
+      </p>
+    </div>
+    <div class="flex space-x-6 gap-10">
+      <p>Terms of Use</p>
+      <p>Privacy Policy</p>
+      <p>Cookie Policy</p>
+    </div>
+  </footer>
+  <% if (status === 'error') { %>
+  <sl-alert type="danger" open duration="5000">
+    <sl-icon slot="icon" name="exclamation-triangle-fill"></sl-icon>
+    <div>
+      <strong>Error:</strong> <%= message %>
+    </div>
+  </sl-alert>
+  <% } %>
+</body>
+</html>

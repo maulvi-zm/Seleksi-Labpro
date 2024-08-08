@@ -1,0 +1,55 @@
+/* custom-styles.css */
+
+sl-badge::part(base) {
+  background-color: #141414;
+  border-color: #262626;
+  color: white;
+}
+
+sl-button::part(base) {
+  background-color: #141414;
+  border-color: #262626;
+  color: white;
+  border-radius: 0.5rem;
+}
+
+sl-dialog::part(panel) {
+  background-color: #141414;
+  color: white;
+  border: 1px solid #262626;
+  border-radius: 0.5rem;
+}
+
+sl-rating {
+  --symbol-color: #262626;
+}
+
+sl-textarea::part(base) {
+  background-color: #1a1a1a;
+  border-color: #262626;
+  color: white;
+}
+
+sl-textarea::part(textarea) {
+  color: white;
+}
+
+sl-textarea::part(form-control-label) {
+  margin-bottom: 10px;
+}
+
+sl-menu-item::part(base) {
+  color: white;
+}
+
+sl-menu-item::part(base):hover {
+  background-color: #262626;
+}
+
+sl-menu-item::part(base):focus {
+  background-color: #262626;
+}
+
+sl-menu-item::part(label) {
+  color: white;
+}
