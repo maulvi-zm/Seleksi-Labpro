@@ -64,3 +64,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.getElementById('playButton').addEventListener('click', () => {
+  window.location.href = '/films/<%= data.id %>/watch';
+});
+
+document.getElementById('buyButton').addEventListener('click', async () => {
+  try {
+    const response = await fetch('/films/<%= data.id %>/buy', {
+      method: 'POST',
+    });
+    const data = await response.json();
+    if (data.status === 'success') {
+      alert('Purchase successful!');
+      location.reload();
+    } else {
+      alert('Purchase failed.');
+    }
+  } catch (error) {
+    console.error('Error purchasing video:', error);
+    alert('An error occurred.');
+  }
+});
+
+document
+  .getElementById('wishlistButton')
+  .addEventListener('click', async () => {
+    try {
+      const response = await fetch('<%= data.id %>/wishlist', {
+        method: 'POST',
+      });
+
+      const result = await response.json();
+
+      const icon = document.getElementById('wishlistIcon');
+      const button = document.getElementById('wishlistButton');
+
+      if (result.data) {
+        icon.name = 'check';
+        button.classList.add('bg-red-700');
+        button.classList.remove('bg-black');
+      } else {
+        icon.name = 'plus';
+        button.classList.remove('bg-red-700');
+        button.classList.add('bg-black');
+      }
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      alert('An error occurred.');
+    }
+  });
