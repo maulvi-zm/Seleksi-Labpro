@@ -1,0 +1,85 @@
+<header class="sticky top-0 w-full z-10 bg-[#141414]" id="navbar">
+  <nav class="w-full h-20 sm:h-24 px-9">
+    <div class="flex items-center h-full w-full px-4">
+      <div class="h-[48px] sm:h-[60px] absolute">
+        <a href="/">
+          <img src="/assets/logo.png" alt="logo" class="h-10 sm:h-14" />
+        </a>
+      </div>
+
+      <div
+        class="py-2 px-4 border border-[#1f1f1f] bg-black hidden md:flex space-x-4 items-center rounded-xl text-base mx-auto text-white"
+      >
+        <a href="/" class="px-2 py-2 rounded-xl" id="home-button">Home</a>
+        <a href="/films" class="px-2 py-2 rounded-xl" id="movie-button"
+          >Movies & Shows</a
+        >
+        <a href="/my-films" class="px-2 py-2 rounded-xl" id="my-films-button"
+          >My Films</a
+        >
+      </div>
+
+      <div class="md:flex items-center absolute right-10 hidden">
+        <sl-dropdown placement="bottom-end">
+          <sl-icon
+            slot="trigger"
+            name="person"
+            class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-[#141414] p-2"
+          ></sl-icon>
+          <sl-menu class="bg-black">
+            <a href="/wishlist">
+              <sl-menu-item>Wishlist</sl-menu-item>
+            </a>
+            <a href="/logout">
+              <sl-menu-item>Log Out</sl-menu-item>
+            </a>
+          </sl-menu>
+        </sl-dropdown>
+      </div>
+
+      <div class="absolute right-10 flex md:hidden">
+        <sl-dropdown placement="bottom-end" class="text-white">
+          <sl-icon
+            slot="trigger"
+            name="list"
+            class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"
+          ></sl-icon>
+          <sl-menu class="bg-black">
+            <a href="/">
+              <sl-menu-item>Home</sl-menu-item>
+            </a>
+            <a href="/films">
+              <sl-menu-item>Movies & Shows</sl-menu-item>
+            </a>
+            <a href="/my-films">
+              <sl-menu-item>My Films</sl-menu-item>
+            </a>
+            <sl-divider class="border-t-[1px] border-[#1f1f1f]"></sl-divider>
+            <a href="/wishlist">
+              <sl-menu-item>Wishlist</sl-menu-item>
+            </a>
+            <a href="/logout">
+              <sl-menu-item>Log Out</sl-menu-item>
+            </a>
+          </sl-menu>
+        </sl-dropdown>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // if current page is home, set the home button to active
+  if (window.location.pathname === '/') {
+    document.getElementById('home-button').classList.add('bg-[#1f1f1f]');
+  } else if (window.location.pathname === '/films') {
+    document.getElementById('movie-button').classList.add('bg-[#1f1f1f]');
+  } else if (window.location.pathname === '/my-films') {
+    document.getElementById('my-films-button').classList.add('bg-[#1f1f1f]');
+  } else if (
+    window.location.pathname === '/login' ||
+    window.location.pathname === '/register'
+  ) {
+    document.getElementById('navbar').classList.add('hidden');
+  }
+</script>

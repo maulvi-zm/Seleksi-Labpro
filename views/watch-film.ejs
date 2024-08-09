@@ -1,26 +1,15 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Stream Vibe</title>
-    <link rel="stylesheet" href="/stylesheet/output.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-  </head>
-  <body class="bg-black h-screen w-screen m-0 font-manrope flex flex-col justify-center items-center text-white">
-    <% if (!data || !data.video_url) { %>
-        <p>
-            You need to purchase this film to watch it.
-        </p>
-        <br />
+<div class="bg-black h-screen w-screen m-0 font-manrope flex flex-col justify-center items-center text-white">
+  <% if (!data || !data.video_url) { %>
+  <p>
+    You need to purchase this film to watch it.
+  </p>
+  <br />
 
-        <a href="/films" class="underline">Back to films</a>
-    <% } else { %>
-        <video controls autoplay class="w-full h-full" fuk>
-            <source src="<%= data.video_url %>" type="video/mp4" />
-            Your browser does not support the video tag.
-        </video>
-    <% } %>
-    </main>
-  </body>
-</html>
+  <a href="/films" class="underline">Back to films</a>
+  <% } else { %>
+  <video controls autoplay class="w-full h-full" fuk>
+    <source src="<%= data.video_url %>" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  <% } %>
+</div>

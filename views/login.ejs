@@ -1,64 +1,44 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Stream Vibe</title>
-    <link rel="stylesheet" href="/stylesheet/output.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
-      rel="stylesheet"
+<div class="flex flex-col justify-center items-center h-full w-full">
+  <div class="fixed top-0 left-0 w-full h-full -z-10">
+    <img
+      src="/assets/index/background.png"
+      alt="background"
+      class="w-full h-full object-cover"
     />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
-    <link rel="stylesheet" href="/stylesheet/register.css" />
+  </div>
+  <div
+    class="bg-[#0f0f0f] p-6 sm:p-10 rounded-2xl space-y-6 sm:space-y-8 w-[90%] sm:w-[70%] md:w-[50%] lg:w-[35%] xl:w-[30%]"
+  >
+    <h1 class="text-white w-full text-center text-xl sm:text-2xl">Login</h1>
 
-  </head>
-  <body class="bg-black h-[100svh] m-0 font-manrope">
-    <main class="flex flex-col justify-center items-center h-full w-full">
-      <div class="fixed top-0 left-0 w-full h-full -z-10">
-        <img
-          src="/assets/index/background.png"
-          alt="background"
-          class="w-full h-full object-cover"
-        />
+    <form action="/login" method="post" class="space-y-4 w-full">
+      <sl-input
+        label="Username"
+        help-text="Please fill your username"
+        required
+        name="username"
+      ></sl-input>
+      <br />
+      <sl-input
+        label="Password"
+        help-text="Please fill your password"
+        password-toggle
+        type="password"
+        required
+        name="password"
+      ></sl-input>
+      <br />
+      <div
+        class="w-full flex justify-between items-center space-y-4 sm:space-y-0"
+      >
+        <a href="/register" class="text-red-700 underline">Register</a>
+        <button
+          type="submit"
+          class="bg-red-700 text-white px-4 py-2 rounded-md font-semibold"
+        >
+          Login
+        </button>
       </div>
-      <div class="bg-[#0f0f0f] p-6 sm:p-10 rounded-2xl space-y-6 sm:space-y-8 w-[90%] sm:w-[70%] md:w-[50%] lg:w-[35%] xl:w-[30%]">
-        <h1 class="text-white w-full text-center text-xl sm:text-2xl">Login</h1>
-
-        <form action="/login" method="post" class="space-y-4 w-full">
-            <sl-input label="Username" help-text="Please fill your username" required name="username"></sl-input>
-            <br>
-            <sl-input label="Password" help-text="Please fill your password" password-toggle type="password" required name="password"></sl-input>
-            <br>
-            <div class="w-full flex justify-between items-center space-y-4 sm:space-y-0">
-                <a href="/register" class="text-red-700 underline">Register</a>
-                <button type="submit" class="bg-red-700 text-white px-4 py-2 rounded-md font-semibold">Login</button>
-            </div>
-        </form>
-      </div>
-    </main>
-
-    <footer class="w-full h-20 bottom-0 relative flex flex-col sm:flex-row justify-around text-white items-center text-xs sm:text-sm">
-      <div>
-        <p>
-            &#64 2024 Stream Vibe. All rights reserved.
-        </p>
-      </div>
-
-      <div class="flex items-center sm:space-x-6 gap-4 sm:gap-10">
-        <p>Terms of Use</p>
-        <p>Privacy Policy</p>
-        <p>Cookie Policy</p>
-      </div>
-    </footer>
-
-    <% if (status === 'error') { %>
-      <script>
-        alert('<%= message %>');
-      </script>
-    <% } %>
-  </body>
-</html>
+    </form>
+  </div>
+</div>

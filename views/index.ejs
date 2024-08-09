@@ -1,116 +1,23 @@
-<!doctype html>
-<html lang="en">
+<div class="fixed top-0 left-0 w-full h-full -z-10">
+  <img
+    src="/assets/index/background.png"
+    alt="background"
+    class="w-full h-full object-cover"
+  />
+</div>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stream Vibe</title>
-  <link rel="stylesheet" href="/stylesheet/output.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
-  <link rel="stylesheet" href="stylesheet/index.css" />
-</head>
-
-<body class="bg-black h-screen m-0 font-manrope">
-  <header class="sticky top-0 w-full z-10">
-    <nav class="w-full h-28 px-9">
-      <div class="flex items-center h-full w-full px-4">
-        <div class="h-[48px] sm:h-[60px] absolute">
-          <img src="/assets/logo.png" alt="logo" class="h-12 sm:h-14" />
-        </div>
-
-        <% if (data.isAuthenticated) { %>
-        <div class="py-2 px-4 border border-[#1f1f1f] bg-black hidden md:flex space-x-4 items-center rounded-xl text-base mx-auto text-white">
-          <a href="/" class="px-2 py-2 bg-[#1f1f1f] rounded-xl">Home</a>
-          <a href="/films">Movies & Shows</a>
-          <a href="/my-films">My Films</a>
-        </div>
-        <% } %>
-
-        <div class="md:flex items-center absolute right-10 hidden">
-          <% if (data.isAuthenticated) { %>
-          <sl-dropdown placement="bottom-end">
-            <sl-icon slot="trigger" name="person" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
-            <sl-menu class="bg-black">
-              <a href="/wishlist">
-                <sl-menu-item>Wishlist</sl-menu-item>
-              </a>
-              <a href="/logout">
-                <sl-menu-item>Log Out</sl-menu-item>
-              </a>
-            </sl-menu>
-          </sl-dropdown>
-          <% } else { %>
-          <a href="/login" class="text-white">Login</a>
-          <% } %>
-        </div>
-
-        <div class="absolute right-10 flex md:hidden">
-          <sl-dropdown placement="bottom-end">
-            <sl-icon slot="trigger" name="list" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
-            <sl-menu class="bg-black">
-              <% if (data.isAuthenticated) { %>
-              <a href="/">
-                <sl-menu-item>Home</sl-menu-item>
-              </a>
-              <a href="/films">
-                <sl-menu-item>Movies & Shows</sl-menu-item>
-              </a>
-              <a href="/my-films">
-                <sl-menu-item>My Films</sl-menu-item>
-              </a>
-              <sl-divider class="border-t-[1px] border-[#1f1f1f]"></sl-divider>
-              <a href="/wishlist">
-                <sl-menu-item>Wishlist</sl-menu-item>
-              </a>
-              <a href="/logout">
-                <sl-menu-item>Log Out</sl-menu-item>
-              </a>
-              <% } else { %>
-              <a href="/login">
-                <sl-menu-item>Login</sl-menu-item>
-              </a>
-              <% } %>
-            </sl-menu>
-          </sl-dropdown>
-        </div>
-      </div>
-    </nav>
-  </header>
-
-
-  <main class="min-h-full w-full">
-    <div class="fixed top-0 left-0 w-full h-full -z-10">
-      <img src="/assets/index/background.png" alt="background" class="w-full h-full object-cover" />
-    </div>
-
-    <div class="flex flex-col items-center justify-center h-screen w-screen text-center gap-8">
-      <img src="/assets/index/vector.png" alt="logo" class="w-64 sm:w-96" />
-      <h1 class="text-white font-semibold text-xl">
-        The Best Streaming Experience
-      </h1>
-      <p class="text-[#999999] sm:w-[70%] lg:w-[50%] text-sm mx-10">
-        StreamVibe is the best streaming experience for watching your favorite movies and shows on demand, anytime, anywhere. With StreamVibe, you can enjoy a wide variety of content, including the latest blockbusters, classic movies, popular TV shows, and more. You can also create your own watchlists, so you can easily find the content you want to watch.
-      </p>
-    </div>
-  </main>
-
-  <footer class="w-full h-20 bottom-0 relative flex flex-col md:flex-row justify-around text-white items-center text-xs sm:text-sm">
-    <div>
-      <p>
-        &#64 2024 Stream Vibe. All rights reserved.
-      </p>
-    </div>
-
-    <div class="flex items-center sm:space-x-6 gap-4 sm:gap-10">
-      <p>Terms of Use</p>
-      <p>Privacy Policy</p>
-      <p>Cookie Policy</p>
-    </div>
-  </footer>
-</body>
-
-</html>
+<div
+  class="flex flex-col items-center justify-center h-screen w-screen text-center gap-8"
+>
+  <img src="/assets/index/vector.png" alt="logo" class="w-64 sm:w-96" />
+  <h1 class="text-white font-semibold text-xl">
+    The Best Streaming Experience
+  </h1>
+  <p class="text-[#999999] sm:w-[70%] lg:w-[50%] text-sm mx-10">
+    StreamVibe is the best streaming experience for watching your favorite
+    movies and shows on demand, anytime, anywhere. With StreamVibe, you can
+    enjoy a wide variety of content, including the latest blockbusters, classic
+    movies, popular TV shows, and more. You can also create your own watchlists,
+    so you can easily find the content you want to watch.
+  </p>
+</div>

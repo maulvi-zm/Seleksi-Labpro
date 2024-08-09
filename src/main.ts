@@ -7,6 +7,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { CustomExceptionFilter } from './common/filters/CustomExceptionFilter';
 import { CustomResponseInterceptor } from './common/interceptors/CustomResponseInterceptor';
 import * as CookieParser from 'cookie-parser';
+import * as expressLayouts from 'express-ejs-layouts';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -30,6 +31,9 @@ async function bootstrap() {
   app.setViewEngine('ejs');
 
   app.use(CookieParser());
+
+  app.use(expressLayouts);
+  app.set('layout', 'layouts/layout');
 
   app.enableCors({
     origin: ['https://labpro-fe.hmif.dev'],
