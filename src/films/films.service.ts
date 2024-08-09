@@ -220,10 +220,15 @@ export class FilmsService {
     page: number = 1,
     limit: number = 9,
     user_id?: string,
+    isWishlisted: boolean = false,
   ) {
     const skip = (page - 1) * limit;
 
-    const userCondition = user_id ? { UsersFilm: { some: { user_id } } } : {};
+    const userCondition = user_id
+      ? isWishlisted
+        ? { UsersWishList: { some: { user_id } } }
+        : { UsersFilm: { some: { user_id } } }
+      : {};
 
     const searchCondition = {
       OR: [

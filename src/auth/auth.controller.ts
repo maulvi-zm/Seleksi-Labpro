@@ -58,13 +58,6 @@ export class AuthController {
     }
   }
 
-  @Get('logout')
-  @UseGuards(JwtAuthGuard)
-  async logout(@Res() res) {
-    res.clearCookie('token');
-    res.redirect('/login');
-  }
-
   @Post('register')
   @FormDataRequest({ storage: MemoryStoredFile })
   async register(@Body() createUserDto: CreateUserDto, @Res() res) {

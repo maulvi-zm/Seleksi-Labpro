@@ -9,5 +9,6 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
   controllers: [FilmsController],
   providers: [FilmsService],
   imports: [PrismaModule, CloudflareModule, NestjsFormDataModule],
+  exports: [FilmsService],
 })
 export class FilmsModule {}

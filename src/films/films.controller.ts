@@ -103,67 +103,6 @@ export class FilmsController {
     return this.filmsService.remove(id);
   }
 
-  /* Monolithic Endpoints */
-
-  @Get('films')
-  @UseGuards(JwtAuthGuard)
-  @Render('films')
-  getFilms(
-    @Query('q') q: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 9,
-  ): object {
-    q = q || '';
-    page = page || 1;
-    limit = limit || 9;
-
-    return this.filmsService.findAllwithPagination(q, page, limit);
-  }
-
-  @Get('my-films')
-  @UseGuards(JwtAuthGuard)
-  @Render('my-films')
-  getMyFilms(
-    @Req() req: any,
-    @Query('q') q: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 9,
-  ): object {
-    q = q || '';
-    page = page || 1;
-    limit = limit || 9;
-
-    const userId = req.user.id;
-
-    return this.filmsService.findAllwithPagination(q, page, limit, userId);
-  }
-
-  @Get('films/:id')
-  @UseGuards(JwtAuthGuard)
-  @Render('film-details')
-  async getFilm(@Param('id') id: string, @Req() req): Promise<object> {
-    const film = await this.filmsService.findOne(id);
-    const reviews = await this.filmsService.getReviews(id);
-    const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
-    const isWishlisted = await this.filmsService.isWishlisted(id, req.user.id);
-
-    const formattedReviews = reviews.map((review) => {
-      return {
-        ...review,
-        created_at: review.created_at.toISOString(),
-      };
-    });
-
-    const data = {
-      ...film,
-      reviews: formattedReviews,
-      isPurchased,
-      isWishlisted,
-    };
-
-    return data;
-  }
-
   @Post('films/:id/review')
   @UseGuards(JwtAuthGuard)
   @FormDataRequest({ storage: MemoryStoredFile })
