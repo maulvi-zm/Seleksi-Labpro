@@ -12,7 +12,9 @@ import { Request } from 'express';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { FilmsService } from './films/films.service';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller()
 export class AppController {
   constructor(
@@ -24,7 +26,7 @@ export class AppController {
   @Render('index')
   getHello(@Req() req: Request): object {
     const isAuthenticated = req.cookies.token ? true : false;
-    return { isAuthenticated: isAuthenticated };
+    return { isAuthenticated: isAuthenticated, stylesheets: ['index.css'] };
   }
 
   @Get('login')
@@ -82,7 +84,12 @@ export class AppController {
       isWishlist,
     );
 
+    const recommendations = await this.filmsService.getRecommendedFilms(
+      req.user.id,
+    );
+
     return {
+      recommendations: recommendations,
       ...filmsData,
       stylesheets: ['films.css'],
     };
@@ -93,7 +100,7 @@ export class AppController {
   @Render('film-details')
   async getFilm(@Param('id') id: string, @Req() req): Promise<object> {
     const film = await this.filmsService.findOne(id);
-    const reviews = await this.filmsService.getReviews(id);
+    const reviews = await this.filmsService.getReviewswithPagination(id);
     const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
     const isWishlisted = await this.filmsService.isWishlisted(id, req.user.id);
 
@@ -114,5 +121,25 @@ export class AppController {
     };
 
     return data;
+  }
+
+  @Get('films/:id/watch')
+  @UseGuards(JwtAuthGuard)
+  @Render('watch-film')
+  async watchFilm(@Param('id') id: string, @Req() req): Promise<object> {
+    const film = await this.filmsService.findOne(id);
+    const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
+
+    if (!isPurchased) {
+      return;
+    }
+
+    return { video_url: film.video_url };
+  }
+
+  @Get('balance')
+  @UseGuards(JwtAuthGuard)
+  getUserBalance(@Req() req): object {
+    return { balance: req.user.balance };
   }
 }
