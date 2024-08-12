@@ -47,6 +47,7 @@ export class AuthController {
   @ApiOkResponse({ type: AuthEntity })
   async loginWeb(@Body() createAuthDto: LoginDto, @Res() res) {
     try {
+      console.log(createAuthDto);
       const user = await this.authService.login(createAuthDto);
 
       if (user) {
@@ -54,7 +55,11 @@ export class AuthController {
         res.redirect('/');
       }
     } catch (error) {
-      res.render('login', { message: error.message, status: 'error' });
+      res.render('login', {
+        message: error.message,
+        status: 'error',
+        data: { stylesheets: ['register.css'] },
+      });
     }
   }
 
