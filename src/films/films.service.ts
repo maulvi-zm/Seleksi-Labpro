@@ -275,7 +275,6 @@ export class FilmsService {
     if (!film) {
       throw new NotFoundException('Film not found');
     }
-    console.log(film);
 
     const reviewResult = await this.prismaService.review.create({
       data: {
@@ -286,16 +285,10 @@ export class FilmsService {
       },
     });
 
-    console.log(reviewResult);
-
     return reviewResult;
   }
 
-  async getReviewswithPagination(
-    filmId: string,
-    page: number = 1,
-    limit: number = 5,
-  ) {
+  async getReviews(filmId: string) {
     // Select reviews for the film with username and exclude user id and film id
     const reviews = await this.prismaService.review.findMany({
       where: { film_id: filmId },
@@ -306,8 +299,6 @@ export class FilmsService {
         User: { select: { username: true } },
       },
       orderBy: { created_at: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit,
     });
 
     return reviews;
@@ -415,82 +406,5 @@ export class FilmsService {
     });
 
     return user.filmWishList.length > 0;
-  }
-
-  async getRecommendedFilms(user_id: string): Promise<FilmResponseDto[]> {
-    const user = await this.prismaService.user.findUnique({
-      where: { user_id },
-      include: {
-        filmBought: {
-          include: {
-            genres: true,
-            Director: true,
-          },
-        },
-        filmWishList: {
-          include: {
-            genres: true,
-            Director: true,
-          },
-        },
-      },
-    });
-
-    const ids = new Set<string>();
-    const genres = new Set<number>();
-    const directors = new Set<number>();
-
-    user.filmWishList.forEach((film) => {
-      ids.add(film.film_id);
-    });
-
-    user.filmBought.forEach((film) => {
-      ids.add(film.film_id);
-      film.genres.forEach((genre) => {
-        genres.add(genre.genre_id);
-      });
-      directors.add(film.Director.director_id);
-    });
-
-    const films = await this.prismaService.film.findMany({
-      where: {
-        AND: [
-          {
-            OR: [
-              {
-                genres: {
-                  some: {
-                    genre_id: {
-                      in: [...genres],
-                    },
-                  },
-                },
-              },
-              {
-                Director: {
-                  director_id: {
-                    in: [...directors],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            NOT: {
-              film_id: {
-                in: [...ids],
-              },
-            },
-          },
-        ],
-      },
-      include: {
-        Director: true,
-        genres: true,
-      },
-      take: 9,
-    });
-
-    return films.map((film) => new FilmResponseDto(film));
   }
 }

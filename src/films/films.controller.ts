@@ -106,49 +106,27 @@ export class FilmsController {
   @Post('films/:id/review')
   @UseGuards(JwtAuthGuard)
   @FormDataRequest({ storage: MemoryStoredFile })
-  async addReview(
+  addReview(
     @Param('id') id: string,
     @Body() addReviewDto: AddReviewDto,
     @Req() req: any,
     @Res() res: any,
-  ): Promise<void> {
+  ): object {
+    // Check if the id is the same as the request referrer
+    if (req.headers.referer.split('/').pop() !== id) {
+      throw new Error('Invalid request');
+    }
+
     try {
-      // Check if the id is the same as the request referrer
-      const refererId = req.headers.referer.split('/').pop();
-      if (refererId !== id) {
-        return res
-          .status(400)
-          .send({ status: 'error', message: 'Invalid request' });
-      }
-
-      console.log('Adding review:', addReviewDto);
-
-      const review = await this.filmsService.addReview(
+      return this.filmsService.addReview(
         id,
         addReviewDto.rating,
         addReviewDto.review,
         req.user.id,
       );
-      return res.status(201).send({ status: 'success', data: review });
     } catch (error) {
-      console.error('Error adding review:', error);
-      return res
-        .status(500)
-        .send({ status: 'error', message: 'Internal Server Error' });
+      res.status(400).send({ status: 'error', message: error.message });
     }
-  }
-
-  @Get('films/:id/review')
-  @UseGuards(JwtAuthGuard)
-  @FormDataRequest({ storage: MemoryStoredFile })
-  async getReview(
-    @Param('id') id: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 5,
-  ): Promise<object> {
-    page = page || 1;
-    limit = limit || 5;
-    return this.filmsService.getReviewswithPagination(id, page, limit);
   }
 
   @Post('films/:id/buy')
@@ -170,5 +148,19 @@ export class FilmsController {
     }
 
     return this.filmsService.addWishlist(id, req.user.id);
+  }
+
+  @Get('films/:id/watch')
+  @UseGuards(JwtAuthGuard)
+  @Render('watch-film')
+  async watchFilm(@Param('id') id: string, @Req() req): Promise<object> {
+    const film = await this.filmsService.findOne(id);
+    const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
+
+    if (!isPurchased) {
+      return;
+    }
+
+    return { video_url: film.video_url };
   }
 }
