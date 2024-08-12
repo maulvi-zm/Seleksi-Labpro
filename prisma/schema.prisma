@@ -36,7 +36,7 @@ enum Role {
 
 model Review {
   review_id Int     @id @default(autoincrement())
-  star      Int   
+  star      Float   
   comment   String
   user_id   String
   film_id   String

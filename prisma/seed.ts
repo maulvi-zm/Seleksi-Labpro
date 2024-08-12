@@ -137,37 +137,37 @@ async function main() {
   // Seeding Reviews
   const reviews = [
     {
-      star: 5,
+      star: 5.0,
       comment: 'Amazing movie!',
       user_id: users[0].user_id,
       film_id: 'uuid-film-1',
     },
     {
-      star: 4,
+      star: 4.0,
       comment: 'Really enjoyed it!',
       user_id: users[1].user_id,
       film_id: 'uuid-film-2',
     },
     {
-      star: 5,
+      star: 5.0,
       comment: 'Outstanding!',
       user_id: users[2].user_id,
       film_id: 'uuid-film-3',
     },
     {
-      star: 3,
+      star: 3.0,
       comment: 'It was okay.',
       user_id: users[3].user_id,
       film_id: 'uuid-film-3',
     },
     {
-      star: 4,
+      star: 4.0,
       comment: 'Pretty good.',
       user_id: users[4].user_id,
       film_id: 'uuid-film-2',
     },
     {
-      star: 5,
+      star: 5.0,
       comment: 'Loved it!',
       user_id: users[5].user_id,
       film_id: 'uuid-film-3',

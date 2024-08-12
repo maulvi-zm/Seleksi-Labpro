@@ -9,7 +9,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
-    "balance" DOUBLE PRECISION NOT NULL,
+    "balance" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "role" "Role" NOT NULL DEFAULT 'USER',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("user_id")
@@ -18,10 +18,11 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Review" (
     "review_id" SERIAL NOT NULL,
-    "star" INTEGER NOT NULL,
+    "star" DOUBLE PRECISION NOT NULL,
     "comment" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
     "film_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Review_pkey" PRIMARY KEY ("review_id")
 );

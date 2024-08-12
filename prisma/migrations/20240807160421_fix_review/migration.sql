@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "Review" ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
-
--- AlterTable
-ALTER TABLE "User" ALTER COLUMN "balance" SET DEFAULT 0;
