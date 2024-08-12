@@ -90,6 +90,7 @@ export class AppController {
     return {
       recommendations: recommendations,
       ...filmsData,
+      scripts: ['films.js'],
     };
   }
 
