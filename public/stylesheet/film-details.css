@@ -53,3 +53,23 @@ sl-menu-item::part(base):focus {
 sl-menu-item::part(label) {
   color: white;
 }
+
+::-webkit-scrollbar {
+  width: 10px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Color of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Roundness of the scrollbar thumb */
+  border: 3px solid #1a1a1a; /* Padding around the scrollbar thumb */
+}
+
+/* Firefox */
+#reviews-list {
+  scrollbar-color: #555 #1a1a1a; /* thumb color track color */
+  scrollbar-width: thin; /* Width of the scrollbar */
+}

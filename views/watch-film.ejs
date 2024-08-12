@@ -7,7 +7,7 @@
 
   <a href="/films" class="underline">Back to films</a>
   <% } else { %>
-  <video controls autoplay class="w-full h-full" fuk>
+  <video controls autoplay class="w-full h-full" controlsList="nodownload">
     <source src="<%= data.video_url %>" type="video/mp4" />
     Your browser does not support the video tag.
   </video>

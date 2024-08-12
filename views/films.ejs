@@ -1,12 +1,12 @@
 <div class="max-w-4xl lg:mx-auto flex-1 mx-8">
-  <form action="films" method="get">
-    <sl-input placeholder="Search" class="w-full" name="q" value="<%= data.q %>">
-      <sl-icon slot="suffix" name="search"></sl-icon>
-    </sl-input>
-  </form>
-
+  <%- include('partials/films-recommendation.ejs') %>
   <div>
     <% if (data.films && data.films.length > 0) { %>
+      <form action="films" method="get">
+        <sl-input placeholder="Search" class="w-full" name="q" value="<%= data.q %>">
+          <sl-icon slot="suffix" name="search"></sl-icon>
+        </sl-input>
+      </form>
     <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-8">
       <% data.films.forEach(film => { %>
       <li class="bg-[#1a1a1a] group hover:scale-105 border border-[#262626] text-white rounded-xl cursor-pointer transition-all">

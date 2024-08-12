@@ -12,32 +12,29 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
   <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
 
-  <% if (data.scripts) { data.scripts.forEach (script => { %>
+  <% if (data && data.scripts !== undefined) { data.scripts.forEach (script => { %>
   <script src="/scripts/<%= script %>"></script>
   <% })} %>
 
-  <% if (data.stylesheets) { data.stylesheets.forEach (stylesheet => { %>
+  <% if (data && data.stylesheets) { data.stylesheets.forEach (stylesheet => { %>
   <link rel="stylesheet" href="/stylesheet/<%= stylesheet %>" />
   <% })} %>
 </head>
 
 <body class="bg-[#141414] min-h-[100svh] m-0 font-manrope">
 
-    <%- include('../partials/header.ejs') %>
+  <%- include('../partials/header.ejs') %>
 
-  <main class="w-full max-w-full min-h-full overflow-hidden">
+  <main class="w-full min-h-[100svh] max-w-full overflow-hidden">
     <%- body %>
   </main>
-  
-    <%- include('../partials/footer.ejs') %>
+
+  <%- include('../partials/footer.ejs') %>
 
   <% if (status === 'error') { %>
-  <sl-alert type="danger" open duration="5000">
-    <sl-icon slot="icon" name="exclamation-triangle-fill"></sl-icon>
-    <div>
-      <strong>Error:</strong> <%= message %>
-    </div>
-  </sl-alert>
+    <script>
+      alert('<%= message %>');
+    </script>
   <% } %>
 </body>
 

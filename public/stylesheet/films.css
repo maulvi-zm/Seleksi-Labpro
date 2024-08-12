@@ -6,3 +6,19 @@ sl-badge::part(base) {
   border-color: #262626;
   color: white;
 }
+
+sl-menu-item::part(base) {
+  color: white;
+}
+
+sl-menu-item::part(base):hover {
+  background-color: #262626;
+}
+
+sl-menu-item::part(base):focus {
+  background-color: #262626;
+}
+
+sl-menu-item::part(label) {
+  color: white;
+}
