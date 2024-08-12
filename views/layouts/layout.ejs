@@ -15,10 +15,6 @@
   <% if (data && data.scripts !== undefined) { data.scripts.forEach (script => { %>
   <script src="/scripts/<%= script %>"></script>
   <% })} %>
-
-  <% if (data && data.stylesheets) { data.stylesheets.forEach (stylesheet => { %>
-  <link rel="stylesheet" href="/stylesheet/<%= stylesheet %>" />
-  <% })} %>
 </head>
 
 <body class="bg-[#141414] min-h-[100svh] m-0 font-manrope">

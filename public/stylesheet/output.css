@@ -44,9 +44,10 @@ html,
   -moz-tab-size: 4;
   /* 3 */
   -o-tab-size: 4;
-     tab-size: 4;
+  tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -89,7 +90,7 @@ Add the correct text decoration in Chrome, Edge, and Safari.
 
 abbr:where([title]) {
   -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
+  text-decoration: underline dotted;
 }
 
 /*
@@ -135,7 +136,8 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
   /* 1 */
   font-feature-settings: normal;
   /* 2 */
@@ -378,7 +380,8 @@ textarea {
 2. Set the default placeholder color to the user's configured gray 400 color.
 */
 
-input::-moz-placeholder, textarea::-moz-placeholder {
+input::-moz-placeholder,
+textarea::-moz-placeholder {
   opacity: 1;
   /* 1 */
   color: #9ca3af;
@@ -398,7 +401,7 @@ Set the default cursor for buttons.
 */
 
 button,
-[role="button"] {
+[role='button'] {
   cursor: pointer;
 }
 
@@ -446,7 +449,9 @@ video {
   display: none;
 }
 
-*, ::before, ::after {
+*,
+::before,
+::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -827,7 +832,7 @@ video {
 
 .gap-x-1 {
   -moz-column-gap: 0.25rem;
-       column-gap: 0.25rem;
+  column-gap: 0.25rem;
 }
 
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
@@ -952,7 +957,7 @@ video {
 
 .object-cover {
   -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 
 .p-10 {
@@ -1087,12 +1092,16 @@ video {
 .hover\:scale-105:hover {
   --tw-scale-x: 1.05;
   --tw-scale-y: 1.05;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .hover\:brightness-125:hover {
   --tw-brightness: brightness(1.25);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
+    var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
+    var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 @media (min-width: 640px) {
@@ -1236,4 +1245,92 @@ video {
   .xl\:w-\[40\%\] {
     width: 40%;
   }
+}
+
+sl-badge::part(base) {
+  background-color: #141414;
+  border-color: #262626;
+  color: white;
+}
+
+sl-button::part(base) {
+  background-color: #141414;
+  border-color: #262626;
+  color: white;
+  border-radius: 0.5rem;
+}
+
+sl-dialog::part(panel) {
+  background-color: #141414;
+  color: white;
+  border: 1px solid #262626;
+  border-radius: 0.5rem;
+}
+
+sl-rating {
+  --symbol-color: #262626;
+}
+
+sl-textarea::part(base) {
+  background-color: #1a1a1a;
+  border-color: #262626;
+  color: white;
+}
+
+sl-textarea::part(textarea) {
+  color: white;
+}
+
+sl-textarea::part(form-control-label) {
+  margin-bottom: 10px;
+}
+
+sl-menu-item::part(base) {
+  color: white;
+}
+
+sl-menu-item::part(base):hover {
+  background-color: #262626;
+}
+
+sl-menu-item::part(base):focus {
+  background-color: #262626;
+}
+
+sl-menu-item::part(label) {
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border: 3px solid #1a1a1a;
+}
+
+#reviews-list {
+  scrollbar-color: #555 #1a1a1a;
+  scrollbar-width: thin;
+}
+
+sl-input {
+  --sl-input-border-color: gray;
+  --sl-input-border-color-focus: black;
+  --sl-input-label-color: white;
+  --sl-input-background-color: black;
+}
+
+sl-input::part(input) {
+  color: white;
+  background-color: black;
+}
+
+sl-input::part(password-toggle-button) {
+  background-color: black;
 }

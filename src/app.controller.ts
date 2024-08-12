@@ -26,7 +26,7 @@ export class AppController {
   @Render('index')
   getHello(@Req() req: Request): object {
     const isAuthenticated = req.cookies.token ? true : false;
-    return { isAuthenticated: isAuthenticated, stylesheets: ['index.css'] };
+    return { isAuthenticated: isAuthenticated };
   }
 
   @Get('login')
@@ -38,7 +38,7 @@ export class AppController {
       res.render('login', {
         status: 'success',
         message: 'You are not logged in',
-        data: { stylesheets: ['register.css'] },
+        data: {},
       });
     }
   }
@@ -54,7 +54,6 @@ export class AppController {
   @Render('register')
   getRegister(): object {
     return {
-      stylesheets: ['register.css'],
       scripts: ['register.js'],
     };
   }
@@ -91,7 +90,6 @@ export class AppController {
     return {
       recommendations: recommendations,
       ...filmsData,
-      stylesheets: ['films.css'],
     };
   }
 
@@ -116,7 +114,6 @@ export class AppController {
       reviews: formattedReviews,
       isPurchased,
       isWishlisted,
-      stylesheets: ['film-details.css'],
       scripts: ['film-details.js'],
     };
 

@@ -11,7 +11,7 @@
     <li class="bg-[#1a1a1a] group hover:scale-105 border border-[#262626] text-white rounded-xl cursor-pointer transition-all">
       <a href="/films/<%= film.id %>">
         <figure class="w-full aspect-[4/3] bg-black rounded-t-xl">
-          <img src="<%= film.cover_image_url %>" alt="<%= film.title %>" class="aspect-[4/3] object-cover rounded-t-xl">
+          <img loading="lazy" src="<%= film.cover_image_url %>" alt="<%= film.title %>" class="aspect-[4/3] object-cover rounded-t-xl">
         </figure>
         <div class="p-4 flex flex-col gap-2">
           <h2 class="card-title"><%= film.title %> (<%= film.release_year %>)</h2>
