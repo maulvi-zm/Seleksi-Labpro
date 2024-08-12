@@ -1,43 +1,41 @@
 <div class="max-w-4xl lg:mx-auto flex-1 mx-8">
   <%- include('partials/films-recommendation.ejs') %>
-  <div>
-    <% if (data.films && data.films.length > 0) { %>
-      <form action="films" method="get">
-        <sl-input placeholder="Search" class="w-full" name="q" value="<%= data.q %>">
-          <sl-icon slot="suffix" name="search"></sl-icon>
-        </sl-input>
-      </form>
-    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-8">
-      <% data.films.forEach(film => { %>
-      <li class="bg-[#1a1a1a] group hover:scale-105 border border-[#262626] text-white rounded-xl cursor-pointer transition-all">
-        <a href="/films/<%= film.id %>">
-          <figure class="w-full aspect-[4/3] bg-black rounded-t-xl">
-            <img src="<%= film.cover_image_url %>" alt="<%= film.title %>" class="aspect-[4/3] object-cover rounded-t-xl">
-          </figure>
-          <div class="p-4 flex flex-col gap-2">
-            <h2 class="card-title"><%= film.title %> (<%= film.release_year %>)</h2>
-            <p class="text-xs -mt-2 font-light mb-2"><%= Math.floor(film.duration / 60).toString().padStart(2, '0') %>:<%= (film.duration % 60).toString().padStart(2, '0') %>:00</p>
-            <ul class="flex flex-wrap gap-x-1">
-              <% film.genre.forEach(genre => { %>
-              <sl-badge variant="neutral" class="font-medium" pill><%= genre %></sl-badge>
-              <% }); %>
-            </ul>
-            <p class="font-light text-sm italic">Directed by: <%= film.director %></p>
-            <div class="flex justify-between">
-              <p class="">🪙 <%= film.price %></p>
-              <% if (film.review_count > 0) { %>
-              <p class=""><%= film.average_star.toFixed(2) %> ⭐️ (<%= film.review_count %>)</p>
-              <% } %>
-            </div>
+  <% if (data.films && data.films.length > 0) { %>
+  <form action="films" method="get">
+    <sl-input placeholder="Search" class="w-full" name="q" value="<%= data.q %>">
+      <sl-icon slot="suffix" name="search"></sl-icon>
+    </sl-input>
+  </form>
+  <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-8">
+    <% data.films.forEach(film => { %>
+    <li class="bg-[#1a1a1a] group hover:scale-105 border border-[#262626] text-white rounded-xl cursor-pointer transition-all">
+      <a href="/films/<%= film.id %>">
+        <figure class="w-full aspect-[4/3] bg-black rounded-t-xl">
+          <img src="<%= film.cover_image_url %>" alt="<%= film.title %>" class="aspect-[4/3] object-cover rounded-t-xl">
+        </figure>
+        <div class="p-4 flex flex-col gap-2">
+          <h2 class="card-title"><%= film.title %> (<%= film.release_year %>)</h2>
+          <p class="text-xs -mt-2 font-light mb-2"><%= Math.floor(film.duration / 60).toString().padStart(2, '0') %>:<%= (film.duration % 60).toString().padStart(2, '0') %>:00</p>
+          <ul class="flex flex-wrap gap-x-1">
+            <% film.genre.forEach(genre => { %>
+            <sl-badge variant="neutral" class="font-medium" pill><%= genre %></sl-badge>
+            <% }); %>
+          </ul>
+          <p class="font-light text-sm italic">Directed by: <%= film.director %></p>
+          <div class="flex justify-between">
+            <p class="">🪙 <%= film.price %></p>
+            <% if (film.review_count > 0) { %>
+            <p class=""><%= film.average_star.toFixed(2) %> ⭐️ (<%= film.review_count %>)</p>
+            <% } %>
           </div>
-        </a>
-      </li>
-      <% }); %>
-    </ul>
-    <% } else { %>
-    <p class="text-white w-full text-center my-9">No films available.</p>
-    <% } %>
-  </div>
+        </div>
+      </a>
+    </li>
+    <% }); %>
+  </ul>
+  <% } else { %>
+  <p class="text-white w-full text-center my-9">No films available.</p>
+  <% } %>
 
   <nav class="w-full flex justify-center">
     <ul class="flex gap-4 text-white">
