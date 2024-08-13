@@ -9,6 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CloudflareService } from 'src/cloudflare/cloudflare.service';
 import { FilmResponseDto } from './dto/film-response.dto';
 import { Prisma } from '@prisma/client';
+import { AddReviewDto } from './dto/add-review.dto';
 
 @Injectable()
 export class FilmsService {
@@ -262,12 +263,7 @@ export class FilmsService {
     };
   }
 
-  async addReview(
-    filmId: string,
-    star: number,
-    review: string,
-    user_id: string,
-  ) {
+  async addReview(filmId: string, review: AddReviewDto, user_id: string) {
     const film = await this.prismaService.film.findUnique({
       where: { film_id: filmId },
     });
@@ -275,12 +271,15 @@ export class FilmsService {
     if (!film) {
       throw new NotFoundException('Film not found');
     }
-    console.log(film);
+
+    if (this.isPurchased(filmId, user_id)) {
+      throw new BadRequestException('You have not purchased this film');
+    }
 
     const reviewResult = await this.prismaService.review.create({
       data: {
-        comment: review,
-        star,
+        comment: review.comment,
+        star: review.star,
         user_id: user_id,
         film_id: filmId,
       },

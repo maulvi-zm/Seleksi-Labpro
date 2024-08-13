@@ -42,38 +42,4 @@ export class AuthController {
       token: req.headers.authorization.split(' ')[1],
     };
   }
-
-  @Post('login')
-  @ApiOkResponse({ type: AuthEntity })
-  async loginWeb(@Body() createAuthDto: LoginDto, @Res() res) {
-    try {
-      console.log(createAuthDto);
-      const user = await this.authService.login(createAuthDto);
-
-      if (user) {
-        res.cookie('token', user.token, { httpOnly: true });
-        res.redirect('/');
-      }
-    } catch (error) {
-      res.render('login', {
-        message: error.message,
-        status: 'error',
-        data: { stylesheets: ['register.css'] },
-      });
-    }
-  }
-
-  @Post('register')
-  @FormDataRequest({ storage: MemoryStoredFile })
-  async register(@Body() createUserDto: CreateUserDto, @Res() res) {
-    try {
-      const user = await this.userService.create(createUserDto);
-
-      if (user) {
-        res.redirect('/login');
-      }
-    } catch (error) {
-      res.render('register', { message: error.message, status: 'error' });
-    }
-  }
 }

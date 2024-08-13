@@ -1,7 +1,9 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
+  Post,
   Query,
   Render,
   Req,
@@ -12,7 +14,13 @@ import { Request } from 'express';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { FilmsService } from './films/films.service';
-import { ApiExcludeController } from '@nestjs/swagger';
+import { ApiExcludeController, ApiOkResponse } from '@nestjs/swagger';
+import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
+import { LoginDto } from './auth/dto/login.dto';
+import { AuthEntity } from './auth/entities/auth.entity';
+import { CreateUserDto } from './users/dto/create-user.dto';
+import { AuthService } from './auth/auth.service';
+import { UsersService } from './users/users.service';
 
 @ApiExcludeController()
 @Controller()
@@ -20,6 +28,8 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly filmsService: FilmsService,
+    private authService: AuthService,
+    private userService: UsersService,
   ) {}
 
   @Get()
@@ -56,6 +66,40 @@ export class AppController {
     return {
       scripts: ['register.js'],
     };
+  }
+
+  @Post('login')
+  @ApiOkResponse({ type: AuthEntity })
+  async loginWeb(@Body() createAuthDto: LoginDto, @Res() res) {
+    try {
+      console.log(createAuthDto);
+      const user = await this.authService.login(createAuthDto);
+
+      if (user) {
+        res.cookie('token', user.token, { httpOnly: true });
+        res.redirect('/');
+      }
+    } catch (error) {
+      res.render('login', {
+        message: error.message,
+        status: 'error',
+        data: { stylesheets: ['register.css'] },
+      });
+    }
+  }
+
+  @Post('register')
+  @FormDataRequest({ storage: MemoryStoredFile })
+  async register(@Body() createUserDto: CreateUserDto, @Res() res) {
+    try {
+      const user = await this.userService.create(createUserDto);
+
+      if (user) {
+        res.redirect('/login');
+      }
+    } catch (error) {
+      res.render('register', { message: error.message, status: 'error' });
+    }
   }
 
   @Get(['films', 'my-films', 'wishlist'])

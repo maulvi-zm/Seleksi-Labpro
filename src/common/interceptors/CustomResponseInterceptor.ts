@@ -21,7 +21,7 @@ export class CustomResponseInterceptor implements NestInterceptor {
       catchError((error) => {
         return throwError(() => ({
           status: 'error',
-          message: error.message,
+          message: error.response.message,
         }));
       }),
     );

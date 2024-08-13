@@ -110,32 +110,12 @@ export class FilmsController {
     @Param('id') id: string,
     @Body() addReviewDto: AddReviewDto,
     @Req() req: any,
-    @Res() res: any,
-  ): Promise<void> {
-    try {
-      // Check if the id is the same as the request referrer
-      const refererId = req.headers.referer.split('/').pop();
-      if (refererId !== id) {
-        return res
-          .status(400)
-          .send({ status: 'error', message: 'Invalid request' });
-      }
-
-      console.log('Adding review:', addReviewDto);
-
-      const review = await this.filmsService.addReview(
-        id,
-        addReviewDto.rating,
-        addReviewDto.review,
-        req.user.id,
-      );
-      return res.status(201).send({ status: 'success', data: review });
-    } catch (error) {
-      console.error('Error adding review:', error);
-      return res
-        .status(500)
-        .send({ status: 'error', message: 'Internal Server Error' });
+  ): Promise<object> {
+    if (req.headers.referer.split('/').pop() !== id) {
+      throw new Error('Invalid request');
     }
+
+    return await this.filmsService.addReview(id, addReviewDto, req.user.id);
   }
 
   @Get('films/:id/review')
@@ -154,7 +134,6 @@ export class FilmsController {
   @Post('films/:id/buy')
   @UseGuards(JwtAuthGuard)
   buyFilm(@Param('id') id: string, @Req() req: any): object {
-    // Check if the id is the same as the request referrer
     if (req.headers.referer.split('/').pop() !== id) {
       throw new Error('Invalid request');
     }

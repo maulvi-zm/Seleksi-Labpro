@@ -34,21 +34,20 @@ function setupReviewForm() {
       .getAttribute('aria-valuenow');
 
     const formData = new FormData(form);
-    formData.append('rating', ratingValue);
+    formData.append('star', ratingValue);
 
     fetch(form.action, {
       method: form.method,
       body: formData,
     })
+      .then((response) => response.json())
       .then((response) => {
-        if (response.ok) {
-          console.log('Form submitted successfully');
+        if (response.status === 'success') {
+          console.log('Review submitted successfully');
         } else {
-          console.error('Form submission failed');
+          console.error('Review submission failed');
+          alert(response.message);
         }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
       });
   });
 }
@@ -95,10 +94,9 @@ function setPagination(currentPage, pageSize) {
               document.getElementById('load-more-reviews').style.display =
                 'none';
             }
+          } else {
+            console.error(response.message);
           }
-        })
-        .catch((error) => {
-          console.error('Error fetching reviews:', error);
         });
     });
 }

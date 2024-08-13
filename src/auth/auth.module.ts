@@ -22,5 +22,6 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

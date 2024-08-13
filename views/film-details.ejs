@@ -96,8 +96,8 @@
           <h2 class="text-[#999999]">Reviews</h2>
           <sl-dialog label="Write a review" class="dialog-overview text-white">
             <form class="flex flex-col gap-4" action="<%= data.id %>/review" method="post" id="review-form">
-              <sl-rating label="Rating" name="rating" id="rating" precision="0.5"></sl-rating>
-              <sl-textarea label="Review:" name="review" class="text-white"></sl-textarea>
+              <sl-rating label="Rating" name="star" id="rating" precision="0.5"></sl-rating>
+              <sl-textarea label="Review:" name="comment" class="text-white"></sl-textarea>
               <sl-button slot="footer" variant="danger" type="submit">Submit</sl-button>
             </form>
           </sl-dialog>

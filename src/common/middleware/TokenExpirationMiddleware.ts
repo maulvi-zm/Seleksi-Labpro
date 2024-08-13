@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { stat } from 'fs';
 import { verify, TokenExpiredError } from 'jsonwebtoken';
 
 @Injectable()

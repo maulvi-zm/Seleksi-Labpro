@@ -1,17 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsInt, IsPositive } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsInt,
+  IsPositive,
+  IsNumber,
+  Max,
+} from 'class-validator';
 
 export class AddReviewDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  review: string;
+  comment: string;
 
-  @IsInt()
+  @IsNumber()
   @IsNotEmpty()
   @IsPositive()
+  @Max(5)
   @Type(() => Number)
   @ApiProperty()
-  rating: number;
+  star: number;
 }
