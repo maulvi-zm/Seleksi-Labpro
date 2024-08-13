@@ -20,9 +20,7 @@ import {
   Query,
   UseGuards,
   Put,
-  Render,
   Req,
-  Res,
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -35,8 +33,6 @@ import { AddReviewDto } from './dto/add-review.dto';
 @Controller()
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
-
-  /* REST API Endpoints */
 
   @Post('api/films')
   @ApiOperation({ summary: 'Create a film' })
@@ -104,6 +100,9 @@ export class FilmsController {
   }
 
   @Post('films/:id/review')
+  @ApiOperation({ summary: 'Add a review' })
+  @ApiResponse({ status: 201, description: 'Review added successfully' })
+  @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @FormDataRequest({ storage: MemoryStoredFile })
   async addReview(
@@ -119,6 +118,9 @@ export class FilmsController {
   }
 
   @Get('films/:id/review')
+  @ApiOperation({ summary: 'Get reviews with pagination' })
+  @ApiResponse({ status: 200, description: 'Return reviews with pagination' })
+  @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @FormDataRequest({ storage: MemoryStoredFile })
   async getReview(
@@ -132,6 +134,8 @@ export class FilmsController {
   }
 
   @Post('films/:id/buy')
+  @ApiOperation({ summary: 'Buy a film' })
+  @ApiResponse({ status: 201, description: 'Film bought successfully' })
   @UseGuards(JwtAuthGuard)
   buyFilm(@Param('id') id: string, @Req() req: any): object {
     if (req.headers.referer.split('/').pop() !== id) {
@@ -142,6 +146,11 @@ export class FilmsController {
   }
 
   @Post('films/:id/wishlist')
+  @ApiOperation({ summary: 'Add a film to wishlist' })
+  @ApiResponse({
+    status: 201,
+    description: 'Film added to wishlist successfully',
+  })
   @UseGuards(JwtAuthGuard)
   addWishlist(@Param('id') id: string, @Req() req: any): object {
     if (req.headers.referer.split('/').pop() !== id) {

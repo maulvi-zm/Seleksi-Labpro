@@ -6,7 +6,7 @@ import {
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CloudflareService } from 'src/cloudflare/cloudflare.service';
+import { StorageService } from 'src/storage/storage.service';
 import { FilmResponseDto } from './dto/film-response.dto';
 import { Prisma } from '@prisma/client';
 import { AddReviewDto } from './dto/add-review.dto';
@@ -15,13 +15,11 @@ import { AddReviewDto } from './dto/add-review.dto';
 export class FilmsService {
   constructor(
     private prismaService: PrismaService,
-    private cloudflareService: CloudflareService,
+    private storageService: StorageService,
   ) {}
 
   async create(createFilmDto: CreateFilmDto) {
-    const videoUrl = await this.cloudflareService.uploadFile(
-      createFilmDto.video,
-    );
+    const videoUrl = await this.storageService.uploadFile(createFilmDto.video);
 
     if (!videoUrl) {
       throw new BadRequestException('Failed to upload video');
@@ -29,7 +27,7 @@ export class FilmsService {
 
     let coverImageUrl = null;
     if (createFilmDto.cover_image) {
-      coverImageUrl = await this.cloudflareService.uploadFile(
+      coverImageUrl = await this.storageService.uploadFile(
         createFilmDto.cover_image,
       );
       if (!coverImageUrl) {
@@ -120,10 +118,10 @@ export class FilmsService {
     let videoUrl = film.video_url;
 
     if (updateFilmDto.video) {
-      this.cloudflareService.deleteFile(videoUrl);
+      this.storageService.deleteFile(videoUrl);
 
       videoUrl = null;
-      videoUrl = await this.cloudflareService.uploadFile(updateFilmDto.video);
+      videoUrl = await this.storageService.uploadFile(updateFilmDto.video);
 
       if (!film.video_url) {
         throw new BadRequestException('Failed to upload video');
@@ -133,10 +131,10 @@ export class FilmsService {
     let coverImageUrl = film.cover_image_url;
 
     if (updateFilmDto.cover_image) {
-      this.cloudflareService.deleteFile(coverImageUrl);
+      this.storageService.deleteFile(coverImageUrl);
 
       coverImageUrl = null;
-      coverImageUrl = await this.cloudflareService.uploadFile(
+      coverImageUrl = await this.storageService.uploadFile(
         updateFilmDto.cover_image,
       );
 
@@ -198,11 +196,11 @@ export class FilmsService {
     }
 
     if (film.video_url) {
-      this.cloudflareService.deleteFile(film.video_url);
+      this.storageService.deleteFile(film.video_url);
     }
 
     if (film.cover_image_url) {
-      this.cloudflareService.deleteFile(film.cover_image_url);
+      this.storageService.deleteFile(film.cover_image_url);
     }
 
     return new FilmResponseDto(

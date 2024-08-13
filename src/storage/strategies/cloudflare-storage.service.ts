@@ -6,78 +6,60 @@ import {
   ListObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { MemoryStoredFile } from 'nestjs-form-data';
+import { ConfigService } from '@nestjs/config';
+import { StorageStrategy } from './storage-strategy.interface';
 
 @Injectable()
-export class CloudflareService {
+export class CloudflareStorageService implements StorageStrategy {
   private s3Client: S3Client;
+  private configService = new ConfigService();
 
   constructor() {
     this.s3Client = new S3Client({
       region: 'auto',
-      endpoint: process.env.CLOUDFLARE_R2_ENDPOINT,
+      endpoint: this.configService.get<string>('CLOUDFLARE_R2_ENDPOINT'),
       credentials: {
-        accessKeyId: process.env.CLOUDFLARE_R2_ADMIN_ACCESS_KEY_ID,
-        secretAccessKey: process.env.CLOUDFLARE_R2_ADMIN_SECRET_ACCESS_KEY,
+        accessKeyId: this.configService.get<string>(
+          'CLOUDFLARE_R2_ADMIN_ACCESS_KEY_ID',
+        ),
+        secretAccessKey: this.configService.get<string>(
+          'CLOUDFLARE_R2_ADMIN_SECRET_ACCESS_KEY',
+        ),
       },
     });
   }
 
   async uploadFile(file: MemoryStoredFile): Promise<string> {
     const key = `${Date.now()}-${file.originalName}`;
-
     const command = new PutObjectCommand({
-      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+      Bucket: this.configService.get<string>('CLOUDFLARE_R2_BUCKET_NAME'),
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
     });
-
     await this.s3Client.send(command);
-
-    // Generate a signed URL for the uploaded file
-    const signedUrl = process.env.CLOUD_FLARE_PUBLIC_ENDPOINT + '/' + key;
-
-    return signedUrl;
+    return `${this.configService.get<string>('CLOUD_FLARE_PUBLIC_ENDPOINT')}/${key}`;
   }
 
   async deleteFile(key: string): Promise<void> {
-    // Get file name from the URL
     const keyParts = key.split('/');
-
-    if (keyParts.length === 0) {
-      throw new Error('Invalid key');
-    }
-
     const fileKey = keyParts[keyParts.length - 1];
-
-    try {
-      const command = new DeleteObjectCommand({
-        Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-        Key: fileKey,
-      });
-
-      await this.s3Client.send(command);
-
-      return;
-    } catch (error) {
-      console.error('Failed to delete file', error);
-    }
+    const command = new DeleteObjectCommand({
+      Bucket: this.configService.get<string>('CLOUDFLARE_R2_BUCKET_NAME'),
+      Key: fileKey,
+    });
+    await this.s3Client.send(command);
   }
 
   async deleteAll(): Promise<void> {
-    // delete all files in the bucket
     const command = new ListObjectsCommand({
-      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+      Bucket: this.configService.get<string>('CLOUDFLARE_R2_BUCKET_NAME'),
     });
-
     const { Contents } = await this.s3Client.send(command);
-
     if (Contents) {
       for (const content of Contents) {
         await this.deleteFile(content.Key);
       }
     }
-
-    return;
   }
 }
