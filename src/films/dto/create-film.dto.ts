@@ -65,8 +65,8 @@ export class CreateFilmDto {
   video: MemoryStoredFile;
 
   @IsFile()
-  @HasMimeType(['image/jpeg', 'image/png'])
-  @MaxFileSize(2 * 1024 * 1024) // 2 MB
+  @HasMimeType(['image/*'])
+  @MaxFileSize(20 * 1024 * 1024) // 20 MB
   @ApiProperty({ type: 'string', format: 'binary' })
   cover_image: MemoryStoredFile;
 }
