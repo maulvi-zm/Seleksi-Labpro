@@ -105,16 +105,16 @@ export class FilmsController {
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @FormDataRequest({ storage: MemoryStoredFile })
-  async addReview(
+  addReview(
     @Param('id') id: string,
     @Body() addReviewDto: AddReviewDto,
     @Req() req: any,
-  ): Promise<object> {
+  ) {
     if (req.headers.referer.split('/').pop() !== id) {
       throw new Error('Invalid request');
     }
 
-    return await this.filmsService.addReview(id, addReviewDto, req.user.id);
+    return this.filmsService.addReview(id, addReviewDto, req.user.id);
   }
 
   @Get('films/:id/review')
@@ -123,11 +123,11 @@ export class FilmsController {
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @FormDataRequest({ storage: MemoryStoredFile })
-  async getReview(
+  getReview(
     @Param('id') id: string,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
-  ): Promise<object> {
+  ) {
     page = page || 1;
     limit = limit || 5;
     return this.filmsService.getReviewswithPagination(id, page, limit);

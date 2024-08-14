@@ -28,14 +28,12 @@ export class DynamicCacheInterceptor implements NestInterceptor {
 
     const cachedResponse = await this.cacheManager.get(cacheKey);
     if (cachedResponse) {
-      console.log('Cache hit');
       return new Observable((observer) => {
         observer.next(cachedResponse);
         observer.complete();
       });
     }
 
-    console.log('Cache miss');
     return next.handle().pipe(
       tap((responseData) => {
         this.cacheManager.set(cacheKey, responseData);

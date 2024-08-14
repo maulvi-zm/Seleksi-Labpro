@@ -1,103 +1,115 @@
 <header class="sticky top-0 w-full z-10 bg-[#141414]" id="navbar">
-    <nav class="w-full h-20 sm:h-24 px-9">
-      <div class="flex items-center h-full w-full px-4">
-        <div class="h-[48px] sm:h-[60px] absolute">
-          <a href="/">
-            <img src="/assets/logo.png" alt="logo" class="h-10 sm:h-14" />
-          </a>
-        </div>
-  
-        <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
-        <div id="middle-menu-bar" class="py-2 px-4 border border-[#1f1f1f] bg-black hidden md:flex space-x-4 items-center rounded-xl text-base mx-auto text-white">
-          <a href="/" class="px-2 py-2 rounded-xl" id="home-button">Home</a>
-          <a href="/films" class="px-2 py-2 rounded-xl" id="movie-button">Movies & Shows</a>
-          <a href="/my-films" class="px-2 py-2 rounded-xl" id="my-films-button">My Films</a>
-        </div>
-        <% } %>
-  
-        <div class="md:flex items-center absolute right-10 hidden">
-            <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
-          <sl-dropdown placement="bottom-end" id="right-menu-bar">
-            <sl-icon slot="trigger" name="person" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-[#141414] p-2"></sl-icon>
-            <sl-menu class="bg-black">
-              <sl-menu-item>Your Balance: 
-                <span id="current-balance"></span>
-              </sl-menu-item>
-              <a href="/wishlist">
-                <sl-menu-item>Wishlist</sl-menu-item>
-              </a>
-              <a href="/logout">
-                <sl-menu-item>Log Out</sl-menu-item>
-              </a>
-            </sl-menu>
-          </sl-dropdown>
-          <% } else { %>
-          <a href="/login" class="text-white text-base ml-4" id="login-button">Log In</a>
-          <% } %>
-        </div>
-  
-        <div class="absolute right-10 flex md:hidden">
-          <sl-dropdown placement="bottom-end" class="text-white">
-            <sl-icon slot="trigger" name="list" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
-            <sl-menu class="bg-black">
-              <a href="/">
-                <sl-menu-item>Home</sl-menu-item>
-              </a>
-              <a href="/films">
-                <sl-menu-item>Movies & Shows</sl-menu-item>
-              </a>
-              <a href="/my-films">
-                <sl-menu-item>My Films</sl-menu-item>
-              </a>
-              <sl-divider class="border-t-[1px] border-[#1f1f1f]"></sl-divider>
-              <sl-menu-item>Your Balance:
-                <span id="current-balance"></span>
-              </sl-menu-item>
-              <a href="/wishlist">
-                <sl-menu-item>Wishlist</sl-menu-item>
-              </a>
-              <a href="/logout">
-                <sl-menu-item>Log Out</sl-menu-item>
-              </a>
-            </sl-menu>
-          </sl-dropdown>
-        </div>
+  <nav class="w-full h-20 sm:h-24 px-9">
+    <div class="flex items-center h-full w-full px-4">
+      <div class="h-[48px] sm:h-[60px] absolute">
+        <a href="/">
+          <img src="/assets/logo.png" alt="logo" class="h-10 sm:h-14" />
+        </a>
       </div>
-    </nav>
-  </header>
-  
-  <script>
-    if (window.location.pathname === '/') {
-      document.getElementById('home-button').classList.add('bg-[#1f1f1f]');
-    } else if (window.location.pathname === '/films') {
-      document.getElementById('movie-button').classList.add('bg-[#1f1f1f]');
-    } else if (window.location.pathname === '/my-films') {
-      document.getElementById('my-films-button').classList.add('bg-[#1f1f1f]');
-    } else if (
-      window.location.pathname === '/login' ||
-      window.location.pathname === '/register'
-    ) {
-      document.getElementById('navbar').classList.add('hidden');
-    } else if (window.location.pathname.includes('/watch')) {
-      document.getElementById('navbar').classList.add('hidden');
-    }
-  </script>
+
+      <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
+      <div id="middle-menu-bar" class="py-2 px-4 border border-[#1f1f1f] bg-black hidden md:flex space-x-4 items-center rounded-xl text-base mx-auto text-white">
+        <a href="/" class="px-2 py-2 rounded-xl" id="home-button">Home</a>
+        <a href="/films" class="px-2 py-2 rounded-xl" id="movie-button">Movies & Shows</a>
+        <a href="/my-films" class="px-2 py-2 rounded-xl" id="my-films-button">My Films</a>
+      </div>
+      <% } %>
+
+      <div class="md:flex items-center absolute right-10 hidden">
+        <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
+        <sl-dropdown placement="bottom-end" id="right-menu-bar">
+          <sl-icon slot="trigger" name="person" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-[#141414] p-2"></sl-icon>
+          <sl-menu class="bg-black">
+            <sl-menu-item>Your Balance:
+              <span id="current-balance"></span>
+            </sl-menu-item>
+            <a href="/wishlist">
+              <sl-menu-item>Wishlist</sl-menu-item>
+            </a>
+            <a href="/logout">
+              <sl-menu-item>Log Out</sl-menu-item>
+            </a>
+          </sl-menu>
+        </sl-dropdown>
+        <% } else { %>
+        <a href="/login" class="text-white text-base ml-4" id="login-button">Log In</a>
+        <% } %>
+      </div>
+
+      <div class="absolute right-10 flex md:hidden">
+        <sl-dropdown placement="bottom-end" class="text-white">
+          <sl-icon slot="trigger" name="list" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
+          <sl-menu class="bg-black">
+            <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
+            <a href="/">
+              <sl-menu-item id="home-button-mobile">Home</sl-menu-item>
+            </a>
+            <a href="/films">
+              <sl-menu-item id="movie-button-mobile">Movies & Shows</sl-menu-item>
+            </a>
+            <a href="/my-films">
+              <sl-menu-item id="my-films-button-mobile">My Films</sl-menu-item>
+            </a>
+            <sl-divider class="border-t-[1px] border-[#1f1f1f]"></sl-divider>
+            <sl-menu-item>Your Balance:
+              <span id="current-balance-mobile"></span>
+            </sl-menu-item>
+            <a href="/wishlist">
+              <sl-menu-item>Wishlist</sl-menu-item>
+            </a>
+            <a href="/logout">
+              <sl-menu-item>Log Out</sl-menu-item>
+            </a>
+            <% } else { %>
+            <a href="/login">
+              <sl-menu-item id="login-button-mobile">Log In</sl-menu-item>
+            </a>
+            <% } %>
+          </sl-menu>
+        </sl-dropdown>
+      </div>
+    </div>
+  </nav>
+</header>
 
 <script>
-  // fetch current user's balance
-  fetch('/balance')
-    .then((res) => res.json())
-    .then((response) => {
-      if (response.status === 'success') {
-        const balanceElement = document.getElementById('current-balance');
-        if (balanceElement) {
-          balanceElement.innerText = `🪙 ${response.data.balance}`;
+  document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    const menuItems = {
+      '/': ['home-button', 'home-button-mobile'],
+      '/films': ['movie-button', 'movie-button-mobile'],
+      '/my-films': ['my-films-button', 'my-films-button-mobile'],
+      '/login': ['login-button', 'login-button-mobile']
+    };
+    const activeButtons = menuItems[path];
+    if (activeButtons) {
+      activeButtons.forEach(id => {
+        const button = document.getElementById(id);
+        if (button) {
+          button.classList.add('bg-[#1f1f1f]');
         }
+      });
+    }
+
+    if (path === '/login' || path === '/register' || path.includes('/watch')) {
+      document.getElementById('navbar').classList.add('hidden');
+    }
+  });
+</script>
+
+<%  if (data.isAuthenticated) { %>
+<script>
+  fetch('/balance')
+    .then(res => res.json())
+    .then(response => {
+      if (response.status === 'success') {
+        const balanceElements = document.querySelectorAll('#current-balance, #current-balance-mobile');
+        balanceElements.forEach(el => {
+          el.innerText = `🪙 ${response.data.balance}`;
+        });
       } else {
         console.error('Error fetching balance:', response.message);
       }
-    })
-    .catch((error) => {
-      console.error('Error fetching balance:', error);
     });
 </script>
+<% } %>
