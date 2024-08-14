@@ -3,7 +3,6 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
-  ListObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { MemoryStoredFile } from 'nestjs-form-data';
 import { ConfigService } from '@nestjs/config';
@@ -49,17 +48,5 @@ export class CloudflareStorageService implements StorageStrategy {
       Key: fileKey,
     });
     await this.s3Client.send(command);
-  }
-
-  async deleteAll(): Promise<void> {
-    const command = new ListObjectsCommand({
-      Bucket: this.configService.get<string>('CLOUDFLARE_R2_BUCKET_NAME'),
-    });
-    const { Contents } = await this.s3Client.send(command);
-    if (Contents) {
-      for (const content of Contents) {
-        await this.deleteFile(content.Key);
-      }
-    }
   }
 }

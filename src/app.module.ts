@@ -13,9 +13,9 @@ import { FilmsModule } from './films/films.module';
 import { StorageModule } from './storage/storage.module';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { TokenExpirationMiddleware } from './common/middleware/TokenExpirationMiddleware';
-import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import * as path from 'path';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
@@ -30,15 +30,29 @@ import * as path from 'path';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '..', 'public'),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const store = await redisStore({
+          ttl: 60 * 1000,
+          socket: {
+            host: configService.get<string>('REDIS_HOST'),
+            port: configService.get<number>('REDIS_PORT'),
+          },
+          password: configService.get<string>('REDIS_PASSWORD') || undefined,
+        });
+
+        return { store };
+      },
+      isGlobal: true,
     }),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
+  async configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TokenExpirationMiddleware)
       .forRoutes(

@@ -9,8 +9,8 @@ import {
   Req,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { FilmsService } from './films/films.service';
@@ -21,6 +21,8 @@ import { AuthEntity } from './auth/entities/auth.entity';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
+import { DynamicCacheInterceptor } from './common/interceptors/DynamicCacheInterceptor';
+import { CacheTTL } from '@nestjs/cache-manager';
 
 @ApiExcludeController()
 @Controller()
@@ -34,13 +36,13 @@ export class AppController {
 
   @Get()
   @Render('index')
-  getHello(@Req() req: Request): object {
+  getHello(@Req() req): object {
     const isAuthenticated = req.cookies.token ? true : false;
     return { isAuthenticated: isAuthenticated };
   }
 
   @Get('login')
-  getLogin(@Req() req: Request, @Res() res): void {
+  getLogin(@Req() req, @Res() res): void {
     if (req.cookies && req.cookies.token) {
       // Change the url to the home page
       res.redirect('/');
@@ -72,7 +74,6 @@ export class AppController {
   @ApiOkResponse({ type: AuthEntity })
   async loginWeb(@Body() createAuthDto: LoginDto, @Res() res) {
     try {
-      console.log(createAuthDto);
       const user = await this.authService.login(createAuthDto);
 
       if (user) {
@@ -104,6 +105,8 @@ export class AppController {
 
   @Get(['films', 'my-films', 'wishlist'])
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(DynamicCacheInterceptor)
+  @CacheTTL(60 * 1000)
   @Render('films')
   async getFilms(
     @Req() req: any,

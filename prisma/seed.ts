@@ -61,12 +61,10 @@ async function main() {
   });
 
   for (const film of films) {
+    console.log(`Processing film ${film.title}`);
     try {
       film.cover_image_url = await saveFile(film.cover_image_url);
       film.video_url = await saveFile(film.video_url);
-
-      console.log(film.cover_image_url);
-      console.log(film.video_url);
     } catch (error) {
       console.error(`Error processing film ${film.title}:`, error);
     }
@@ -122,6 +120,7 @@ async function main() {
   const users = [];
 
   for (let i = 1; i <= 10; i++) {
+    console.log(`Processing user ${i}`);
     users.push({
       user_id: uuid.v4(),
       username: `user${i}`,
@@ -141,11 +140,12 @@ async function main() {
   }
 
   // Add Admin
+  console.log('Adding admin');
   await prisma.user.create({
     data: {
       user_id: uuid.v4(),
-      username: `admin`,
-      password: bcrypt.hashSync(`password`, 10),
+      username: process.env.ADMIN_USERNAME,
+      password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
       email: `admin@example.com`,
       first_name: `Admin`,
       last_name: `Admin`,
