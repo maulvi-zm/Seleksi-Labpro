@@ -3,13 +3,12 @@ import { Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
-  IsInt,
   IsPositive,
   IsNumber,
   Max,
 } from 'class-validator';
 
-export class AddReviewDto {
+export class CreateReviewDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()

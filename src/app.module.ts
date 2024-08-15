@@ -16,6 +16,7 @@ import { TokenExpirationMiddleware } from './common/middleware/TokenExpirationMi
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { redisStore } from 'cache-manager-redis-yet';
     AuthModule,
     FilmsModule,
     StorageModule,
+    ReviewsModule,
     NestjsFormDataModule.config({
       storage: MemoryStoredFile,
     }),

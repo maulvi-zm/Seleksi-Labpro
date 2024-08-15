@@ -27,7 +27,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
 import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/decorator/roles.decorator';
-import { AddReviewDto } from './dto/add-review.dto';
 
 @ApiTags('films')
 @Controller()
@@ -97,40 +96,6 @@ export class FilmsController {
   @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.filmsService.remove(id);
-  }
-
-  @Post('films/:id/review')
-  @ApiOperation({ summary: 'Add a review' })
-  @ApiResponse({ status: 201, description: 'Review added successfully' })
-  @ApiConsumes('multipart/form-data')
-  @UseGuards(JwtAuthGuard)
-  @FormDataRequest({ storage: MemoryStoredFile })
-  addReview(
-    @Param('id') id: string,
-    @Body() addReviewDto: AddReviewDto,
-    @Req() req: any,
-  ) {
-    if (req.headers.referer.split('/').pop() !== id) {
-      throw new Error('Invalid request');
-    }
-
-    return this.filmsService.addReview(id, addReviewDto, req.user.id);
-  }
-
-  @Get('films/:id/review')
-  @ApiOperation({ summary: 'Get reviews with pagination' })
-  @ApiResponse({ status: 200, description: 'Return reviews with pagination' })
-  @ApiConsumes('multipart/form-data')
-  @UseGuards(JwtAuthGuard)
-  @FormDataRequest({ storage: MemoryStoredFile })
-  getReview(
-    @Param('id') id: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 5,
-  ) {
-    page = page || 1;
-    limit = limit || 5;
-    return this.filmsService.getReviewswithPagination(id, page, limit);
   }
 
   @Post('films/:id/buy')

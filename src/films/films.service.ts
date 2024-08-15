@@ -9,7 +9,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { StorageService } from 'src/storage/storage.service';
 import { FilmResponseDto } from './dto/film-response.dto';
 import { Prisma } from '@prisma/client';
-import { AddReviewDto } from './dto/add-review.dto';
 
 @Injectable()
 export class FilmsService {
@@ -221,8 +220,6 @@ export class FilmsService {
     user_id?: string,
     isWishlisted: boolean = false,
   ) {
-    const skip = (page - 1) * limit;
-
     const userCondition = user_id
       ? isWishlisted
         ? { UsersWishList: { some: { user_id } } }
@@ -241,7 +238,7 @@ export class FilmsService {
         where: {
           AND: [userCondition, searchCondition],
         },
-        skip,
+        skip: (page - 1) * limit,
         take: limit,
         include: { Director: true, genres: true },
       }),
@@ -259,55 +256,6 @@ export class FilmsService {
       page,
       limit,
     };
-  }
-
-  async addReview(filmId: string, review: AddReviewDto, user_id: string) {
-    const film = await this.prismaService.film.findUnique({
-      where: { film_id: filmId },
-    });
-
-    if (!film) {
-      throw new NotFoundException('Film not found');
-    }
-
-    if (this.isPurchased(filmId, user_id)) {
-      throw new BadRequestException('You have not purchased this film');
-    }
-
-    const reviewResult = await this.prismaService.review.create({
-      data: {
-        comment: review.comment,
-        star: review.star,
-        user_id: user_id,
-        film_id: filmId,
-      },
-    });
-
-    console.log(reviewResult);
-
-    return reviewResult;
-  }
-
-  async getReviewswithPagination(
-    filmId: string,
-    page: number = 1,
-    limit: number = 5,
-  ) {
-    // Select reviews for the film with username and exclude user id and film id
-    const reviews = await this.prismaService.review.findMany({
-      where: { film_id: filmId },
-      select: {
-        star: true,
-        comment: true,
-        created_at: true,
-        User: { select: { username: true } },
-      },
-      orderBy: { created_at: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-
-    return reviews;
   }
 
   async buyFilm(filmId: string, user_id: string) {

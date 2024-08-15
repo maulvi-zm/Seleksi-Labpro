@@ -23,6 +23,7 @@ import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { DynamicCacheInterceptor } from './common/interceptors/DynamicCacheInterceptor';
 import { CacheTTL } from '@nestjs/cache-manager';
+import { ReviewsService } from './reviews/reviews.service';
 
 @ApiExcludeController()
 @Controller()
@@ -32,6 +33,7 @@ export class AppController {
     private readonly filmsService: FilmsService,
     private authService: AuthService,
     private userService: UsersService,
+    private reviewsService: ReviewsService,
   ) {}
 
   @Get()
@@ -146,20 +148,16 @@ export class AppController {
   @Render('film-details')
   async getFilm(@Param('id') id: string, @Req() req): Promise<object> {
     const film = await this.filmsService.findOne(id);
-    const reviews = await this.filmsService.getReviewswithPagination(id);
+    const reviews = await this.reviewsService.getReviewswithPagination(
+      id,
+      req.user.id,
+    );
     const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
     const isWishlisted = await this.filmsService.isWishlisted(id, req.user.id);
 
-    const formattedReviews = reviews.map((review) => {
-      return {
-        ...review,
-        created_at: review.created_at.toISOString(),
-      };
-    });
-
     const data = {
       ...film,
-      reviews: formattedReviews,
+      reviews,
       isPurchased,
       isWishlisted,
       scripts: ['film-details.js'],
