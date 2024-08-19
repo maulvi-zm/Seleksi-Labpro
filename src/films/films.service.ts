@@ -220,6 +220,10 @@ export class FilmsService {
     user_id?: string,
     isWishlisted: boolean = false,
   ) {
+    q = q || '';
+    page = page || 1;
+    limit = limit || 9;
+
     const userCondition = user_id
       ? isWishlisted
         ? { UsersWishList: { some: { user_id } } }

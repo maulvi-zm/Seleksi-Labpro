@@ -22,7 +22,7 @@ import { CreateUserDto } from './users/dto/create-user.dto';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { DynamicCacheInterceptor } from './common/interceptors/DynamicCacheInterceptor';
-import { CacheTTL } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { ReviewsService } from './reviews/reviews.service';
 
 @ApiExcludeController()
@@ -105,10 +105,25 @@ export class AppController {
     }
   }
 
-  @Get(['films', 'my-films', 'wishlist'])
-  @UseGuards(JwtAuthGuard)
+  @Get('films')
   @UseInterceptors(DynamicCacheInterceptor)
   @CacheTTL(60 * 1000)
+  @Render('films')
+  async getAllFilms(@Req() req, @Query('q') q: string): Promise<object> {
+    const isAuthenticated = req.cookies.token ? true : false;
+
+    const filmsData = await this.filmsService.findAllwithPagination(q);
+
+    return {
+      isAuthenticated,
+      ...filmsData,
+      scripts: ['films.js'],
+    };
+  }
+
+  @Get(['my-films', 'wishlist'])
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(DynamicCacheInterceptor)
   @Render('films')
   async getFilms(
     @Req() req: any,
@@ -116,13 +131,7 @@ export class AppController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 9,
   ): Promise<object> {
-    q = q || '';
-    page = page || 1;
-    limit = limit || 9;
-
-    const isMyFilms = req.path.includes('my-films');
-    const isWishlist = req.path.includes('wishlist');
-    const userId = isMyFilms || isWishlist ? req.user.id : undefined;
+    const { isWishlist, userId } = this.extractUserInfo(req);
 
     const filmsData = await this.filmsService.findAllwithPagination(
       q,
@@ -144,22 +153,29 @@ export class AppController {
   }
 
   @Get('films/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(CacheInterceptor)
   @Render('film-details')
   async getFilm(@Param('id') id: string, @Req() req): Promise<object> {
     const film = await this.filmsService.findOne(id);
     const reviews = await this.reviewsService.getReviewswithPagination(
       id,
-      req.user.id,
+      req.user?.id,
     );
-    const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
-    const isWishlisted = await this.filmsService.isWishlisted(id, req.user.id);
+
+    const isAuthenticated = req.cookies.token ? true : false;
+    const isPurchased = isAuthenticated
+      ? await this.filmsService.isPurchased(id, req.user.id)
+      : false;
+    const isWishlisted = isAuthenticated
+      ? await this.filmsService.isWishlisted(id, req.user.id)
+      : false;
 
     const data = {
       ...film,
       reviews,
       isPurchased,
       isWishlisted,
+      isAuthenticated,
       scripts: ['film-details.js'],
     };
 
@@ -184,5 +200,16 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   getUserBalance(@Req() req): object {
     return { balance: req.user.balance, username: req.user.username };
+  }
+
+  private extractUserInfo(req: any): {
+    isMyFilms: boolean;
+    isWishlist: boolean;
+    userId: string | undefined;
+  } {
+    const isMyFilms = req.path.includes('my-films');
+    const isWishlist = req.path.includes('wishlist');
+    const userId = isMyFilms || isWishlist ? req.user.id : undefined;
+    return { isMyFilms, isWishlist, userId };
   }
 }

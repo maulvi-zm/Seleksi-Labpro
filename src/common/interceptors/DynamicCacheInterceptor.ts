@@ -21,10 +21,13 @@ export class DynamicCacheInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
 
     const { q, page, limit } = request.query;
-    const userId = request.user.id;
+    const userId = request.user?.id;
     const path = request.path;
 
-    const cacheKey = `${path}?q=${q || ''}&page=${page || 1}&limit=${limit || 9}&userId=${userId}`;
+    let cacheKey = `${path}?q=${q || ''}&page=${page || 1}&limit=${limit || 9}`;
+    if (userId) {
+      cacheKey += `&userId=${userId}`;
+    }
 
     const cachedResponse = await this.cacheManager.get(cacheKey);
     if (cachedResponse) {

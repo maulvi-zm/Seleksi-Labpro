@@ -42,7 +42,7 @@ export class ReviewsService {
 
   async getReviewswithPagination(
     filmId: string,
-    user_id: string = '',
+    user_id?: string,
     page: number = 1,
     limit: number = 5,
   ) {
@@ -63,14 +63,17 @@ export class ReviewsService {
       this.prismaService.review.count({ where: { film_id: filmId } }),
     ]);
 
-    const reviewsWithOwnership = reviews.map((review) => ({
-      ...review,
-      owned: review.User.user_id === user_id,
-    }));
+    let reviewsWithOwnership = reviews;
+    if (user_id) {
+      reviewsWithOwnership = reviews.map((review) => ({
+        ...review,
+        owned: review.User.user_id === user_id,
+      }));
 
-    reviewsWithOwnership.forEach((review) => {
-      delete review.User.user_id;
-    });
+      reviewsWithOwnership.forEach((review) => {
+        delete review.User.user_id;
+      });
+    }
 
     return { reviews: reviewsWithOwnership, total, page };
   }

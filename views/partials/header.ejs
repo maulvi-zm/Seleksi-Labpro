@@ -7,10 +7,10 @@
         </a>
       </div>
 
-      <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
       <div id="middle-menu-bar" class="py-2 px-4 border border-[#1f1f1f] bg-black hidden md:flex space-x-4 items-center rounded-xl text-base mx-auto text-white">
         <a href="/" class="px-2 py-2 rounded-xl" id="home-button">Home</a>
         <a href="/films" class="px-2 py-2 rounded-xl" id="movie-button">Movies & Shows</a>
+        <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
         <a href="/my-films" class="px-2 py-2 rounded-xl" id="my-films-button">My Films</a>
       </div>
       <% } %>
@@ -43,13 +43,13 @@
         <sl-dropdown placement="bottom-end" class="text-white">
           <sl-icon slot="trigger" name="list" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-black p-2"></sl-icon>
           <sl-menu class="bg-black">
-            <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
             <a href="/">
               <sl-menu-item id="home-button-mobile">Home</sl-menu-item>
             </a>
             <a href="/films">
               <sl-menu-item id="movie-button-mobile">Movies & Shows</sl-menu-item>
             </a>
+            <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
             <a href="/my-films">
               <sl-menu-item id="my-films-button-mobile">My Films</sl-menu-item>
             </a>
