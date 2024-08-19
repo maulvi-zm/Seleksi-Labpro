@@ -180,9 +180,9 @@ export class AppController {
     return { video_url: film.video_url };
   }
 
-  @Get('balance')
+  @Get('user-info')
   @UseGuards(JwtAuthGuard)
   getUserBalance(@Req() req): object {
-    return { balance: req.user.balance };
+    return { balance: req.user.balance, username: req.user.username };
   }
 }

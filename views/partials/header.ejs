@@ -20,6 +20,9 @@
         <sl-dropdown placement="bottom-end" id="right-menu-bar">
           <sl-icon slot="trigger" name="person" class="text-white text-2xl border rounded-lg border-[#1f1f1f] bg-[#141414] p-2"></sl-icon>
           <sl-menu class="bg-black">
+            <sl-menu-item>
+              <span id="current-username"></span>
+            </sl-menu-item>
             <sl-menu-item>Your Balance:
               <span id="current-balance"></span>
             </sl-menu-item>
@@ -51,6 +54,9 @@
               <sl-menu-item id="my-films-button-mobile">My Films</sl-menu-item>
             </a>
             <sl-divider class="border-t-[1px] border-[#1f1f1f]"></sl-divider>
+            <sl-menu-item>
+              <span id="current-username-mobile"></span>
+            </sl-menu-item>
             <sl-menu-item>Your Balance:
               <span id="current-balance-mobile"></span>
             </sl-menu-item>
@@ -99,7 +105,7 @@
 
 <%  if (data.isAuthenticated) { %>
 <script>
-  fetch('/balance')
+  fetch('/user-info')
     .then(res => res.json())
     .then(response => {
       if (response.status === 'success') {
@@ -107,8 +113,13 @@
         balanceElements.forEach(el => {
           el.innerText = `🪙 ${response.data.balance}`;
         });
+
+        const usernameElements = document.querySelectorAll('#current-username, #current-username-mobile');
+        usernameElements.forEach(el => {
+          el.innerText = response.data.username;
+        });
       } else {
-        console.error('Error fetching balance:', response.message);
+        console.error('Error fetching user info:', response.message);
       }
     });
 </script>
