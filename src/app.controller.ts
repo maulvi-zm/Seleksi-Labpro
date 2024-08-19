@@ -86,7 +86,7 @@ export class AppController {
       res.render('login', {
         message: error.message,
         status: 'error',
-        data: { stylesheets: ['register.css'] },
+        data: {},
       });
     }
   }

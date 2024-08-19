@@ -19,12 +19,19 @@ export class AuthService {
     const { username, password } = createAuthDto;
 
     // Find user by email
-    const user = await this.prismaService.user.findUnique({
+    let user = await this.prismaService.user.findUnique({
       where: { username },
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      // Find by email
+      user = await this.prismaService.user.findUnique({
+        where: { email: username },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
     }
 
     const isPasswordValid = await bycrypt.compare(password, user.password);

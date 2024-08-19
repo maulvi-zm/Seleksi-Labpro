@@ -5,24 +5,28 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { UserResponseDto } from './dto/user-response.dto';
 import { Role } from '@prisma/client';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    if (
-      await this.prismaService.user.findUnique({
-        where: { username: createUserDto.username },
-      })
-    ) {
+    const existingUserByUsername = await this.prismaService.user.findUnique({
+      where: { username: createUserDto.username },
+    });
+    if (existingUserByUsername) {
       throw new Error('Username already exists');
     }
-    if (
-      await this.prismaService.user.findUnique({
-        where: { email: createUserDto.email },
-      })
-    ) {
+
+    if (isEmail(createUserDto.username)) {
+      throw new Error('Username cannot be an email');
+    }
+
+    const existingUserByEmail = await this.prismaService.user.findUnique({
+      where: { email: createUserDto.email },
+    });
+    if (existingUserByEmail) {
       throw new Error('Email already exists');
     }
 
@@ -35,13 +39,11 @@ export class UsersService {
 
     const { password_confirmation, ...user } = createUserDto;
 
-    return new UserResponseDto(
-      await this.prismaService.user.create({
-        data: {
-          ...user,
-        },
-      }),
-    );
+    const newUser = await this.prismaService.user.create({
+      data: user,
+    });
+
+    return new UserResponseDto(newUser);
   }
 
   async findAll() {
