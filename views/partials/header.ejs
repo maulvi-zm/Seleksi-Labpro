@@ -12,8 +12,8 @@
         <a href="/films" class="px-2 py-2 rounded-xl" id="movie-button">Movies & Shows</a>
         <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>
         <a href="/my-films" class="px-2 py-2 rounded-xl" id="my-films-button">My Films</a>
+        <% } %>
       </div>
-      <% } %>
 
       <div class="md:flex items-center absolute right-10 hidden">
         <% if (data.isAuthenticated === undefined || data.isAuthenticated) { %>

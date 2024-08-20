@@ -8,7 +8,8 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { StorageService } from 'src/storage/storage.service';
 import { FilmResponseDto } from './dto/film-response.dto';
-import { Prisma } from '@prisma/client';
+import { Director, Film, Genre, Prisma } from '@prisma/client';
+import { RecommendationQueryBuilder } from './utils/RecommendationQueryBuilder';
 
 @Injectable()
 export class FilmsService {
@@ -385,59 +386,25 @@ export class FilmsService {
       },
     });
 
-    const ids = new Set<string>();
-    const genres = new Set<number>();
-    const directors = new Set<number>();
+    const recommendationBuilder = new RecommendationQueryBuilder();
 
     user.filmWishList.forEach((film) => {
-      ids.add(film.film_id);
+      recommendationBuilder.excludeFilmIds([film.film_id]);
     });
 
     user.filmBought.forEach((film) => {
-      ids.add(film.film_id);
-      film.genres.forEach((genre) => {
-        genres.add(genre.genre_id);
-      });
-      directors.add(film.Director.director_id);
+      recommendationBuilder
+        .excludeFilmIds([film.film_id])
+        .addGenres(film.genres.map((genre) => genre.genre_id))
+        .addDirectors([film.Director.director_id]);
     });
 
     const films = await this.prismaService.film.findMany({
-      where: {
-        AND: [
-          {
-            OR: [
-              {
-                genres: {
-                  some: {
-                    genre_id: {
-                      in: [...genres],
-                    },
-                  },
-                },
-              },
-              {
-                Director: {
-                  director_id: {
-                    in: [...directors],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            NOT: {
-              film_id: {
-                in: [...ids],
-              },
-            },
-          },
-        ],
-      },
+      ...recommendationBuilder.build(),
       include: {
-        Director: true,
         genres: true,
+        Director: true,
       },
-      take: 9,
     });
 
     return films.map((film) => new FilmResponseDto(film));
