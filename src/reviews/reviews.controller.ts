@@ -3,20 +3,18 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Req,
   UseGuards,
   Query,
   Render,
-  Put,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 
 @Controller('reviews')
 export class ReviewsController {

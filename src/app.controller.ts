@@ -38,7 +38,7 @@ export class AppController {
 
   @Get()
   @Render('index')
-  getHello(@Req() req): object {
+  getIndex(@Req() req): object {
     const isAuthenticated = req.cookies.token ? true : false;
     return { isAuthenticated: isAuthenticated };
   }

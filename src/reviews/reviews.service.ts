@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { FilmsService } from 'src/films/films.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { FilmsService } from '../films/films.service';
 
 @Injectable()
 export class ReviewsService {

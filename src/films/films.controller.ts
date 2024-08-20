@@ -23,10 +23,10 @@ import {
   Req,
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guards';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/roles.guards';
 import { Role } from '@prisma/client';
-import { Roles } from 'src/auth/decorator/roles.decorator';
+import { Roles } from '../auth/decorator/roles.decorator';
 
 @ApiTags('films')
 @Controller()

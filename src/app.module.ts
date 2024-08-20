@@ -16,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { ReviewsModule } from './reviews/reviews.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     FilmsModule,
     StorageModule,
     ReviewsModule,
+    PrismaModule,
     NestjsFormDataModule.config({
       storage: MemoryStoredFile,
     }),

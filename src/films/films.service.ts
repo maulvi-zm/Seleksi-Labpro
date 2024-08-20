@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { StorageService } from 'src/storage/storage.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { StorageService } from '../storage/storage.service';
 import { FilmResponseDto } from './dto/film-response.dto';
-import { Director, Film, Genre, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { RecommendationQueryBuilder } from './utils/RecommendationQueryBuilder';
 
 @Injectable()
@@ -114,6 +114,10 @@ export class FilmsService {
       where: { film_id: id },
       select: { video_url: true, cover_image_url: true },
     });
+
+    if (!film) {
+      throw new NotFoundException('Film not found');
+    }
 
     let videoUrl = film.video_url;
 

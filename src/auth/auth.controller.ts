@@ -5,6 +5,7 @@ import {
   Body,
   UseGuards,
   Request,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -27,6 +28,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   self(@Request() req) {
+    if (!req.headers.authorization) {
+      throw new UnauthorizedException();
+    }
     return {
       username: req.user.username,
       token: req.headers.authorization.split(' ')[1],
