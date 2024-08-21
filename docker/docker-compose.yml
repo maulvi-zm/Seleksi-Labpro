@@ -9,7 +9,6 @@ services:
     volumes:
       - ../:/app
       - /app/node_modules
-      - /app/media
     env_file:
       - ../.env.development
     depends_on:

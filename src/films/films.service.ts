@@ -10,6 +10,7 @@ import { StorageService } from '../storage/storage.service';
 import { FilmResponseDto } from './dto/film-response.dto';
 import { Prisma } from '@prisma/client';
 import { RecommendationQueryBuilder } from './utils/RecommendationQueryBuilder';
+import { max } from 'class-validator';
 
 @Injectable()
 export class FilmsService {
@@ -25,7 +26,7 @@ export class FilmsService {
       throw new BadRequestException('Failed to upload video');
     }
 
-    let coverImageUrl = null;
+    let coverImageUrl = '/assets/no-image.webp';
     if (createFilmDto.cover_image) {
       coverImageUrl = await this.storageService.uploadFile(
         createFilmDto.cover_image,
@@ -225,8 +226,8 @@ export class FilmsService {
     user_id?: string,
     isWishlisted: boolean = false,
   ) {
-    q = q || '';
     page = page || 1;
+    q = q || '';
     limit = limit || 9;
 
     const userCondition = user_id

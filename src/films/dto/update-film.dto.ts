@@ -15,11 +15,4 @@ export class UpdateFilmDto extends CreateFilmDto {
   @MaxFileSize(200 * 1024 * 1024) // 200 MB
   @ApiProperty({ type: 'string', format: 'binary' })
   video: MemoryStoredFile;
-
-  @IsFile()
-  @IsOptional()
-  @HasMimeType(['image/*'])
-  @MaxFileSize(20 * 1024 * 1024) // 20 MB
-  @ApiProperty({ type: 'string', format: 'binary' })
-  cover_image: MemoryStoredFile;
 }
