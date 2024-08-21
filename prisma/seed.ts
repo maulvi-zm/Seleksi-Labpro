@@ -199,8 +199,6 @@ async function main() {
       data: review,
     });
   }
-
-  //   console.log('Seeding selesai');
 }
 
 main()

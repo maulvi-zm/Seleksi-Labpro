@@ -20,7 +20,6 @@ export class LocalStorageService implements StorageStrategy {
   async uploadFile(file: MemoryStoredFile): Promise<string> {
     const fileName = `${Date.now()}-${file.originalName}`;
     const filePath = path.join(this.uploadPath, fileName);
-    console.log(filePath);
     await fs.writeFile(filePath, file.buffer);
     return `http://localhost:3000/uploads/${fileName}`;
   }
