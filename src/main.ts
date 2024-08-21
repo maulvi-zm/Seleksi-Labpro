@@ -14,7 +14,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new CustomResponseInterceptor());
-  // app.useGlobalFilters(new CustomExceptionFilter());
+  app.useGlobalFilters(new CustomExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Seleksi Labpro API')
