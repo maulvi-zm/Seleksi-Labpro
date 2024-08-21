@@ -17,6 +17,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { UserMiddleware } from './common/middleware/UserMiddleware';
 
 @Module({
   imports: [
@@ -61,6 +62,11 @@ export class AppModule implements NestModule {
         { path: 'logout', method: RequestMethod.GET },
         { path: 'films', method: RequestMethod.ALL },
         { path: 'my-films', method: RequestMethod.ALL },
-      );
+      )
+      .apply(UserMiddleware)
+      .forRoutes({
+        path: 'films/:id',
+        method: RequestMethod.ALL,
+      });
   }
 }

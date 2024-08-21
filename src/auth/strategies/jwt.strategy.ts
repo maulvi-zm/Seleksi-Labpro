@@ -17,7 +17,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           if (req && req.cookies) {
             token = req.cookies['token'];
           }
-
           return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req);
         },
       ]),
@@ -27,11 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: { user_id: string }) {
     const user = await this.usersService.findOne(payload.user_id);
-
     if (!user) {
       throw new UnauthorizedException();
     }
-
     return user;
   }
 }

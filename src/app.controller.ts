@@ -109,10 +109,19 @@ export class AppController {
   @UseInterceptors(DynamicCacheInterceptor)
   @CacheTTL(60 * 1000)
   @Render('films')
-  async getAllFilms(@Req() req, @Query('q') q: string): Promise<object> {
+  async getAllFilms(
+    @Req() req,
+    @Query('q') q: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 9,
+  ): Promise<object> {
     const isAuthenticated = req.cookies.token ? true : false;
 
-    const filmsData = await this.filmsService.findAllwithPagination(q);
+    const filmsData = await this.filmsService.findAllwithPagination(
+      q,
+      page,
+      limit,
+    );
 
     return {
       isAuthenticated,
@@ -163,12 +172,14 @@ export class AppController {
     );
 
     const isAuthenticated = req.cookies.token ? true : false;
-    const isPurchased = isAuthenticated
-      ? await this.filmsService.isPurchased(id, req.user.id)
-      : false;
-    const isWishlisted = isAuthenticated
-      ? await this.filmsService.isWishlisted(id, req.user.id)
-      : false;
+    const isPurchased =
+      isAuthenticated && req.user
+        ? await this.filmsService.isPurchased(id, req.user.id)
+        : false;
+    const isWishlisted =
+      isAuthenticated && req.user
+        ? await this.filmsService.isWishlisted(id, req.user.id)
+        : false;
 
     const data = {
       ...film,

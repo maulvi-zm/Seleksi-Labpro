@@ -38,10 +38,7 @@ function setupReviewForm() {
     })
       .then((response) => response.json())
       .then((response) => {
-        if (response.status === 'success') {
-          console.log('Review submitted successfully');
-        } else {
-          console.error('Review submission failed');
+        if (response.status === 'error') {
           alert(response.message);
         }
       });
