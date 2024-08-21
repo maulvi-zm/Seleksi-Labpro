@@ -1,73 +1,100 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+ <img src="./public/assets/logo.png" width="200" alt="StreamVibe Logo" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center">A modern streaming platform for your favorite movies and TV shows.</p>
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+StreamVibe is a cutting-edge movie streaming platform built with modern technologies to provide a seamless viewing experience.
 
-## Installation
+## Developer Information
+
+<div align="center">
+
+| **Name**                | **NIM**  |
+| ----------------------- | -------- |
+| Maulvi Ziadinda Maulana | 13522122 |
+
+</div>
+
+## Running the App
+
+1. Initialize Docker
 
 ```bash
-$ npm install
+# Change directory to dockerfiles
+$ cd docker
+
+# Build docker image
+$ docker compose build -d -V --build
 ```
 
-## Running the app
+2. Migrate database
 
 ```bash
-# development
-$ npm run start
+# Find docker image name/id
+$ docker ps
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Run the migration command
+$ docker exec -it <container_id_or_name> npx prisma migrate reset --force
 ```
 
 ## Test
 
 ```bash
-# unit tests
+# Unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
+
+## Design Pattern
+
+For a detailed explanation about the design pattern, please refer to [design pattern explanation](/docs/design-pattern.md)
+
+## Technology Stack
+
+- NestJs (10.3.10)
+- Swagger (5.0.1)
+- Ejs (3.1.10)
+- Prisma (5.17.0)
+- Jest (29.5.0)
+- Tailwind CSS (3.4.7)
+- Redis (3.1.2)
+- Postgresql (16.4)
+
+## Endpoints
+
+For a detailed explanation about the endpoints, please refer to <a>API documentation</a>.
+
+## Bonus
+
+| **Feature Code** | **Feature Description**                                                                                                                  | **Explanation**                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| B01              | **OWASP**: Implement and demonstrate that your website is secure against 3 of the top 10 OWASP vulnerabilities of 2021.                  | [OWASP Security](/docs/bonus/b1.md)          |
+| B02              | **Deployment**: Deploy the monorepo and database. Include the deployment link in the README.                                             | [Deployment](/docs/bonus/b2.md)              |
+| B03              | **Polling**: Implement a polling system that updates the user's view without page reload/refresh after an admin adds a film.             | [Polling System](/docs/bonus/b3.md)          |
+| B04              | **Caching**: Implement Redis caching for the most accessed database endpoint. Provide testing instructions in the README.                | [Caching with Redis](/docs/bonus/b4.md)      |
+| B05              | **Lighthouse**: Run Google Lighthouse audits for frontend pages and improve the code to achieve a minimum score of 95 in each category.  | [Google Lighthouse Audit](/docs/bonus/b5.md) |
+| B06              | **Responsive Layout**: Ensure all frontend pages are responsive and adapt to different screen sizes.                                     | [Responsive Layout](/docs/bonus/b6.md)       |
+| B07              | **API Documentation**: Document the API for single service and monolith backend using Swagger. Include the link in the README.           | [API Documentation](/docs/bonus/b7.md)       |
+| B08              | **SOLID Principles**: Apply SOLID principles to the backend or REST API. Explain how these principles were applied in the README.        | [SOLID Principles](/docs/bonus/b8.md)        |
+| B09              | **Automated Testing**: Create unit or end-to-end tests covering at least 60% of the codebase. Include the coverage report in the README. | [Automated Testing](/docs/bonus/b9.md)       |
+| B10              | **Additional Features**: Implement up to 3 additional features such as Film Recommendations, Rating + Review, Wishlist.                  | [Additional Features](/docs/bonus/b10.md)    |
+| B11              | **Ember**: Use a bucket for storing uploaded films, separate from the source code server. It is recommended to use Cloudflare R2.        | [Ember Implementation](/docs/bonus/b11.md)   |
+
+## Figma UI Template
+
+This project uses a UI template from the Figma community made by Praha. You can find the template [here](https://www.figma.com/community/file/1294589591426976269/ott-dark-theme-website-ui-design-template-for-media-streaming-movies-and-tv-free-editable)
 
 ## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+StreamVibe is an open-source project. It can grow thanks to sponsors and support by amazing backers. If you'd like to join them, please read more here.
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Author - Maulvi
+Website - https://maulvi-zm.me
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+StreamVibe is MIT licensed.
