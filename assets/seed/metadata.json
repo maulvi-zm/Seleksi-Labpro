@@ -1,0 +1,194 @@
+[
+  {
+    "film_id": "uuid-film-1",
+    "title": "Captain Tsubasa",
+    "description": "A story about a football player.",
+    "director_id": 1,
+    "release_year": 2021,
+    "price": 9,
+    "duration": 120,
+    "genres": {
+      "connect": [{ "genre_id": 4 }, { "genre_id": 5 }]
+    },
+    "cover_image_url": "assets/seed/images/image-1.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-1.mp4"
+  },
+  {
+    "film_id": "uuid-film-2",
+    "title": "Jujutsu Kaisen",
+    "description": "A story about a jujutsu sorcerer.",
+    "director_id": 2,
+    "release_year": 2022,
+    "price": 11,
+    "duration": 140,
+    "genres": {
+      "connect": [{ "genre_id": 1 }, { "genre_id": 2 }]
+    },
+    "cover_image_url": "assets/seed/images/image-2.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-2.mp4"
+  },
+  {
+    "film_id": "uuid-film-3",
+    "title": "One Piece",
+    "description": "A story about a pirate.",
+    "director_id": 3,
+    "release_year": 2023,
+    "price": 12,
+    "duration": 160,
+    "genres": {
+      "connect": [{ "genre_id": 1 }, { "genre_id": 2 }]
+    },
+    "cover_image_url": "assets/seed/images/image-3.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-3.mp4"
+  },
+  {
+    "film_id": "uuid-film-4",
+    "title": "Naruto",
+    "description": "A story about a ninja.",
+    "director_id": 4,
+    "release_year": 2019,
+    "price": 10,
+    "duration": 150,
+    "genres": {
+      "connect": [{ "genre_id": 3 }, { "genre_id": 4 }]
+    },
+    "cover_image_url": "assets/seed/images/image-4.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-4.mp4"
+  },
+  {
+    "film_id": "uuid-film-5",
+    "title": "Dragon Ball",
+    "description": "A story about a warrior.",
+    "director_id": 5,
+    "release_year": 2018,
+    "price": 8,
+    "duration": 130,
+    "genres": {
+      "connect": [{ "genre_id": 2 }, { "genre_id": 5 }]
+    },
+    "cover_image_url": "assets/seed/images/image-5.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-5.mp4"
+  },
+  {
+    "film_id": "uuid-film-6",
+    "title": "Bleach",
+    "description": "A story about a soul reaper.",
+    "director_id": 6,
+    "release_year": 2017,
+    "price": 9,
+    "duration": 110,
+    "genres": {
+      "connect": [{ "genre_id": 1 }, { "genre_id": 3 }]
+    },
+    "cover_image_url": "assets/seed/images/image-6.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-6.mp4"
+  },
+  {
+    "film_id": "uuid-film-7",
+    "title": "Fairy Tail",
+    "description": "A story about a wizard.",
+    "director_id": 7,
+    "release_year": 2016,
+    "price": 10,
+    "duration": 125,
+    "genres": {
+      "connect": [{ "genre_id": 2 }, { "genre_id": 4 }]
+    },
+    "cover_image_url": "assets/seed/images/image-7.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-7.mp4"
+  },
+  {
+    "film_id": "uuid-film-8",
+    "title": "Attack on Titan",
+    "description": "A story about giants.",
+    "director_id": 8,
+    "release_year": 2020,
+    "price": 12,
+    "duration": 135,
+    "genres": {
+      "connect": [{ "genre_id": 3 }, { "genre_id": 5 }]
+    },
+    "cover_image_url": "assets/seed/images/image-8.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-8.mp4"
+  },
+  {
+    "film_id": "uuid-film-9",
+    "title": "Demon Slayer",
+    "description": "A story about demon hunters.",
+    "director_id": 9,
+    "release_year": 2019,
+    "price": 11,
+    "duration": 115,
+    "genres": {
+      "connect": [{ "genre_id": 1 }, { "genre_id": 2 }]
+    },
+    "cover_image_url": "assets/seed/images/image-9.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-9.mp4"
+  },
+  {
+    "film_id": "uuid-film-10",
+    "title": "My Hero Academia",
+    "description": "A story about heroes.",
+    "director_id": 10,
+    "release_year": 2018,
+    "price": 10,
+    "duration": 140,
+    "genres": {
+      "connect": [{ "genre_id": 2 }, { "genre_id": 3 }]
+    },
+    "cover_image_url": "assets/seed/images/image-10.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-10.mp4"
+  },
+  {
+    "film_id": "uuid-film-11",
+    "title": "Fullmetal Alchemist",
+    "description": "A story about alchemists.",
+    "director_id": 11,
+    "release_year": 2017,
+    "price": 9,
+    "duration": 145,
+    "genres": {
+      "connect": [{ "genre_id": 4 }, { "genre_id": 5 }]
+    },
+    "cover_image_url": "assets/seed/images/image-11.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-11.mp4"
+  },
+  {
+    "film_id": "uuid-film-12",
+    "title": "Sword Art Online",
+    "description": "A story about virtual reality.",
+    "director_id": 12,
+    "release_year": 2021,
+    "price": 12,
+    "duration": 150,
+    "genres": {
+      "connect": [{ "genre_id": 1 }, { "genre_id": 3 }]
+    },
+    "cover_image_url": "assets/seed/images/image-12.webp",
+    "average_star": 0,
+    "review_count": 0,
+    "video_url": "assets/seed/videos/video-12.mp4"
+  }
+]
