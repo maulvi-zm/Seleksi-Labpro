@@ -40,6 +40,8 @@ $ docker ps
 $ docker exec -it <container_id_or_name> npx prisma migrate reset --force
 ```
 
+3. Open the application at `http://localhost:3000`
+
 ## Test
 
 ```bash
@@ -49,7 +51,7 @@ $ npm run test
 
 ## Deployment
 
-This application has been deployed to [https://seleksi-labpro-538a79323cdf.herokuapp.com/films](https://seleksi-labpro-538a79323cdf.herokuapp.com/films).
+This application has been deployed to [https://seleksi-labpro-538a79323cdf.herokuapp.com](https://seleksi-labpro-538a79323cdf.herokuapp.com).
 
 ## Design Pattern
 
