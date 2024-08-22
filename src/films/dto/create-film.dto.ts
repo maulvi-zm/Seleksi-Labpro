@@ -14,7 +14,7 @@ import {
   MaxFileSize,
   MemoryStoredFile,
 } from 'nestjs-form-data';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 export class CreateFilmDto {
   @IsString()
@@ -43,6 +43,9 @@ export class CreateFilmDto {
   @IsNotEmpty()
   @IsString({ each: true })
   @ApiProperty({ type: [String] })
+  @Transform(({ value }) =>
+    typeof value === 'string' && !value.includes(',') ? [value] : value,
+  )
   genre: string[];
 
   @IsNumber()
