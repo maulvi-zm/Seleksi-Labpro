@@ -32,7 +32,7 @@ async function saveFile(inputFile: string) {
 }
 
 async function main() {
-  const jsonPath = path.join(__dirname, '..', 'media', 'metadata.json');
+  const jsonPath = path.join(__dirname, '..', 'assets/seed', 'metadata.json');
   const filmsMetadatas = await fs.readFile(jsonPath, 'utf-8');
   const films = JSON.parse(filmsMetadatas);
 
