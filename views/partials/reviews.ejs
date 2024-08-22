@@ -34,7 +34,7 @@
 
       <% if (data.page > 1) { %>
       <li class="w-12 h-12 flex items-center justify-center border-[#262626] bg-black border rounded-md hover:brightness-125">
-        <button value="<%= data.page - 1 %>" class="review-page-button">
+        <button value="<%= data.page - 1 %>" class="review-page-button w-full">
           <sl-icon name="chevron-left"></sl-icon>
         </button>
       </li>
@@ -42,13 +42,13 @@
 
       <% for (let i = startPage; i <= endPage; i++) { %>
       <li class="w-12 h-12 flex items-center justify-center border-[#262626] border rounded-md <%= i === data.page ? 'bg-red-700' : 'bg-black' %> hover:brightness-125">
-        <button value="<%= i %>" class="review-page-button"><%= i %></button>
+        <button value="<%= i %>" class="review-page-button w-full"><%= i %></button>
       </li>
       <% } %>
 
       <% if (data.page < totalPages) { %>
       <li class="w-12 h-12 flex items-center justify-center border-[#262626] bg-black border rounded-md hover:brightness-125">
-        <button value="<%= data.page + 1 %>" class="review-page-button">
+        <button value="<%= data.page + 1 %>" class="review-page-button w-full">
           <sl-icon name="chevron-right"></sl-icon>
         </button>
       </li>
