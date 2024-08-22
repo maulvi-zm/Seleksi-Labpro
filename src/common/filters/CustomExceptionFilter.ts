@@ -18,7 +18,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    let message = (exception as any).message;
+    let message = (exception as any).message || 'An unknown error occurred';
 
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       message = this.getPrismaErrorMessage(exception);

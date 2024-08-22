@@ -1,18 +1,29 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
+  Post,
   Query,
   Render,
   Req,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { FilmsService } from './films/films.service';
-import { ApiExcludeController } from '@nestjs/swagger';
+import { ApiExcludeController, ApiOkResponse } from '@nestjs/swagger';
+import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
+import { LoginDto } from './auth/dto/login.dto';
+import { AuthEntity } from './auth/entities/auth.entity';
+import { CreateUserDto } from './users/dto/create-user.dto';
+import { AuthService } from './auth/auth.service';
+import { UsersService } from './users/users.service';
+import { DynamicCacheInterceptor } from './common/interceptors/DynamicCacheInterceptor';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { ReviewsService } from './reviews/reviews.service';
 
 @ApiExcludeController()
 @Controller()
@@ -20,17 +31,20 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly filmsService: FilmsService,
+    private authService: AuthService,
+    private userService: UsersService,
+    private reviewsService: ReviewsService,
   ) {}
 
   @Get()
   @Render('index')
-  getHello(@Req() req: Request): object {
+  getIndex(@Req() req): object {
     const isAuthenticated = req.cookies.token ? true : false;
     return { isAuthenticated: isAuthenticated };
   }
 
   @Get('login')
-  getLogin(@Req() req: Request, @Res() res): void {
+  getLogin(@Req() req, @Res() res): void {
     if (req.cookies && req.cookies.token) {
       // Change the url to the home page
       res.redirect('/');
@@ -47,7 +61,7 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   async logout(@Res() res) {
     res.clearCookie('token');
-    res.redirect('/login');
+    res.redirect('/');
   }
 
   @Get('register')
@@ -58,8 +72,67 @@ export class AppController {
     };
   }
 
-  @Get(['films', 'my-films', 'wishlist'])
+  @Post('login')
+  @ApiOkResponse({ type: AuthEntity })
+  async loginWeb(@Body() createAuthDto: LoginDto, @Res() res) {
+    try {
+      const user = await this.authService.login(createAuthDto);
+
+      if (user) {
+        res.cookie('token', user.token, { httpOnly: true });
+        res.redirect('/');
+      }
+    } catch (error) {
+      res.render('login', {
+        message: error.message,
+        status: 'error',
+        data: {},
+      });
+    }
+  }
+
+  @Post('register')
+  @FormDataRequest({ storage: MemoryStoredFile })
+  async register(@Body() createUserDto: CreateUserDto, @Res() res) {
+    try {
+      const user = await this.userService.create(createUserDto);
+
+      if (user) {
+        res.redirect('/login');
+      }
+    } catch (error) {
+      res.render('register', { message: error.message, status: 'error' });
+    }
+  }
+
+  @Get('films')
+  @UseInterceptors(DynamicCacheInterceptor)
+  @CacheTTL(60 * 1000)
+  @Render('films')
+  async getAllFilms(
+    @Req() req,
+    @Query('q') q: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 9,
+  ): Promise<object> {
+    const isAuthenticated = req.cookies.token ? true : false;
+
+    const filmsData = await this.filmsService.findAllwithPagination(
+      q,
+      page,
+      limit,
+    );
+
+    return {
+      isAuthenticated,
+      ...filmsData,
+      scripts: ['films.js'],
+    };
+  }
+
+  @Get(['my-films', 'wishlist'])
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(DynamicCacheInterceptor)
   @Render('films')
   async getFilms(
     @Req() req: any,
@@ -67,13 +140,7 @@ export class AppController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 9,
   ): Promise<object> {
-    q = q || '';
-    page = page || 1;
-    limit = limit || 9;
-
-    const isMyFilms = req.path.includes('my-films');
-    const isWishlist = req.path.includes('wishlist');
-    const userId = isMyFilms || isWishlist ? req.user.id : undefined;
+    const { isWishlist, userId } = this.extractUserInfo(req);
 
     const filmsData = await this.filmsService.findAllwithPagination(
       q,
@@ -90,30 +157,35 @@ export class AppController {
     return {
       recommendations: recommendations,
       ...filmsData,
+      scripts: ['films.js'],
     };
   }
 
   @Get('films/:id')
-  @UseGuards(JwtAuthGuard)
   @Render('film-details')
   async getFilm(@Param('id') id: string, @Req() req): Promise<object> {
     const film = await this.filmsService.findOne(id);
-    const reviews = await this.filmsService.getReviewswithPagination(id);
-    const isPurchased = await this.filmsService.isPurchased(id, req.user.id);
-    const isWishlisted = await this.filmsService.isWishlisted(id, req.user.id);
+    const reviews = await this.reviewsService.getReviewswithPagination(
+      id,
+      req.user?.id,
+    );
 
-    const formattedReviews = reviews.map((review) => {
-      return {
-        ...review,
-        created_at: review.created_at.toISOString(),
-      };
-    });
+    const isAuthenticated = req.cookies.token ? true : false;
+    const isPurchased =
+      isAuthenticated && req.user
+        ? await this.filmsService.isPurchased(id, req.user.id)
+        : false;
+    const isWishlisted =
+      isAuthenticated && req.user
+        ? await this.filmsService.isWishlisted(id, req.user.id)
+        : false;
 
     const data = {
       ...film,
-      reviews: formattedReviews,
+      reviews,
       isPurchased,
       isWishlisted,
+      isAuthenticated,
       scripts: ['film-details.js'],
     };
 
@@ -134,9 +206,20 @@ export class AppController {
     return { video_url: film.video_url };
   }
 
-  @Get('balance')
+  @Get('user-info')
   @UseGuards(JwtAuthGuard)
   getUserBalance(@Req() req): object {
-    return { balance: req.user.balance };
+    return { balance: req.user.balance, username: req.user.username };
+  }
+
+  private extractUserInfo(req: any): {
+    isMyFilms: boolean;
+    isWishlist: boolean;
+    userId: string | undefined;
+  } {
+    const isMyFilms = req.path.includes('my-films');
+    const isWishlist = req.path.includes('wishlist');
+    const userId = isMyFilms || isWishlist ? req.user.id : undefined;
+    return { isMyFilms, isWishlist, userId };
   }
 }

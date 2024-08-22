@@ -5,6 +5,7 @@ import {
   IsPositive,
   IsNumber,
   IsNotEmpty,
+  IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -13,7 +14,7 @@ import {
   MaxFileSize,
   MemoryStoredFile,
 } from 'nestjs-form-data';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 
 export class CreateFilmDto {
   @IsString()
@@ -65,8 +66,9 @@ export class CreateFilmDto {
   video: MemoryStoredFile;
 
   @IsFile()
-  @HasMimeType(['image/jpeg', 'image/png'])
-  @MaxFileSize(2 * 1024 * 1024) // 2 MB
+  @IsOptional()
+  @HasMimeType(['image/*'])
+  @MaxFileSize(2 * 1024 * 1024) // 20 MB
   @ApiProperty({ type: 'string', format: 'binary' })
   cover_image: MemoryStoredFile;
 }

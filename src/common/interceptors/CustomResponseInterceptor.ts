@@ -4,6 +4,7 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
+import e from 'express';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -19,9 +20,14 @@ export class CustomResponseInterceptor implements NestInterceptor {
         };
       }),
       catchError((error) => {
+        if (Array.isArray(error.message)) {
+          error.message = error.message[0];
+        }
+
         return throwError(() => ({
           status: 'error',
-          message: error.message,
+          message: error.message || 'An unknown error occurred',
+          data: null,
         }));
       }),
     );

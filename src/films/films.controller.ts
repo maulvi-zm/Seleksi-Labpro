@@ -20,23 +20,18 @@ import {
   Query,
   UseGuards,
   Put,
-  Render,
   Req,
-  Res,
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guards';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/roles.guards';
 import { Role } from '@prisma/client';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { AddReviewDto } from './dto/add-review.dto';
+import { Roles } from '../auth/decorator/roles.decorator';
 
 @ApiTags('films')
 @Controller()
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
-
-  /* REST API Endpoints */
 
   @Post('api/films')
   @ApiOperation({ summary: 'Create a film' })
@@ -103,58 +98,11 @@ export class FilmsController {
     return this.filmsService.remove(id);
   }
 
-  @Post('films/:id/review')
-  @UseGuards(JwtAuthGuard)
-  @FormDataRequest({ storage: MemoryStoredFile })
-  async addReview(
-    @Param('id') id: string,
-    @Body() addReviewDto: AddReviewDto,
-    @Req() req: any,
-    @Res() res: any,
-  ): Promise<void> {
-    try {
-      // Check if the id is the same as the request referrer
-      const refererId = req.headers.referer.split('/').pop();
-      if (refererId !== id) {
-        return res
-          .status(400)
-          .send({ status: 'error', message: 'Invalid request' });
-      }
-
-      console.log('Adding review:', addReviewDto);
-
-      const review = await this.filmsService.addReview(
-        id,
-        addReviewDto.rating,
-        addReviewDto.review,
-        req.user.id,
-      );
-      return res.status(201).send({ status: 'success', data: review });
-    } catch (error) {
-      console.error('Error adding review:', error);
-      return res
-        .status(500)
-        .send({ status: 'error', message: 'Internal Server Error' });
-    }
-  }
-
-  @Get('films/:id/review')
-  @UseGuards(JwtAuthGuard)
-  @FormDataRequest({ storage: MemoryStoredFile })
-  async getReview(
-    @Param('id') id: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 5,
-  ): Promise<object> {
-    page = page || 1;
-    limit = limit || 5;
-    return this.filmsService.getReviewswithPagination(id, page, limit);
-  }
-
   @Post('films/:id/buy')
+  @ApiOperation({ summary: 'Buy a film' })
+  @ApiResponse({ status: 201, description: 'Film bought successfully' })
   @UseGuards(JwtAuthGuard)
   buyFilm(@Param('id') id: string, @Req() req: any): object {
-    // Check if the id is the same as the request referrer
     if (req.headers.referer.split('/').pop() !== id) {
       throw new Error('Invalid request');
     }
@@ -163,6 +111,11 @@ export class FilmsController {
   }
 
   @Post('films/:id/wishlist')
+  @ApiOperation({ summary: 'Add a film to wishlist' })
+  @ApiResponse({
+    status: 201,
+    description: 'Film added to wishlist successfully',
+  })
   @UseGuards(JwtAuthGuard)
   addWishlist(@Param('id') id: string, @Req() req: any): object {
     if (req.headers.referer.split('/').pop() !== id) {

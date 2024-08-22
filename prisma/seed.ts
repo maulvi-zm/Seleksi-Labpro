@@ -1,14 +1,39 @@
 import { PrismaClient } from '@prisma/client';
-import * as bycrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import * as uuid from 'uuid';
-import * as fs from 'fs';
+import * as path from 'path';
+import { promises as fs } from 'fs';
 
 const prisma = new PrismaClient();
 
+async function saveFile(inputFile: string) {
+  try {
+    const pathDir = path.join(__dirname, '..', 'dist', 'public', 'uploads');
+    const filePath = path.join(__dirname, '..', ...inputFile.split('/'));
+
+    const fileBuffer = await fs.readFile(filePath);
+
+    const fileName = inputFile.split('/').pop();
+    const newFilePath = path.join(pathDir, fileName);
+
+    // Check if the directory exists before creating it
+    try {
+      await fs.access(pathDir);
+    } catch (error) {
+      await fs.mkdir(pathDir, { recursive: true });
+    }
+
+    await fs.writeFile(newFilePath, fileBuffer);
+
+    return 'http://localhost:3000/' + path.join('uploads', fileName);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function main() {
-  const jsonPath =
-    '/Users/maulvizm/Documents/GitHub/Seleksi-Labpro/media/metadata.json';
-  const filmsMetadatas = fs.readFileSync(jsonPath, 'utf-8');
+  const jsonPath = path.join(__dirname, '..', 'assets/seed', 'metadata.json');
+  const filmsMetadatas = await fs.readFile(jsonPath, 'utf-8');
   const films = JSON.parse(filmsMetadatas);
 
   const directors = await prisma.director.createMany({
@@ -34,6 +59,16 @@ async function main() {
       { name: 'Katsuhiro Otomo' },
     ],
   });
+
+  for (const film of films) {
+    console.log(`Processing film ${film.title}`);
+    try {
+      film.cover_image_url = await saveFile(film.cover_image_url);
+      film.video_url = await saveFile(film.video_url);
+    } catch (error) {
+      console.error(`Error processing film ${film.title}:`, error);
+    }
+  }
 
   // Seeding Genre
   const genres = await prisma.genre.createMany({
@@ -61,7 +96,6 @@ async function main() {
   });
 
   // Seeding Film
-
   for (const film of films) {
     await prisma.film.create({
       data: {
@@ -86,10 +120,11 @@ async function main() {
   const users = [];
 
   for (let i = 1; i <= 10; i++) {
+    console.log(`Processing user ${i}`);
     users.push({
       user_id: uuid.v4(),
       username: `user${i}`,
-      password: bycrypt.hashSync(`password${i}`, 10),
+      password: bcrypt.hashSync(`password${i}`, 10),
       email: `user${i}@example.com`,
       first_name: `User`,
       last_name: `${i}`,
@@ -105,11 +140,12 @@ async function main() {
   }
 
   // Add Admin
+  console.log('Adding admin');
   await prisma.user.create({
     data: {
       user_id: uuid.v4(),
-      username: `admin`,
-      password: bycrypt.hashSync(`password`, 10),
+      username: process.env.ADMIN_USERNAME,
+      password: bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10),
       email: `admin@example.com`,
       first_name: `Admin`,
       last_name: `Admin`,
@@ -117,22 +153,6 @@ async function main() {
       role: 'ADMIN',
     },
   });
-
-  //   // Seeding UsersWishList
-  //   const wishlists = [
-  //     { user_id: 'uuid-1', film_id: 'uuid-film-1' },
-  //     { user_id: 'uuid-2', film_id: 'uuid-film-2' },
-  //     { user_id: 'uuid-3', film_id: 'uuid-film-3' },
-  //     { user_id: 'uuid-4', film_id: 'uuid-film-1' },
-  //     { user_id: 'uuid-5', film_id: 'uuid-film-2' },
-  //     { user_id: 'uuid-6', film_id: 'uuid-film-3' },
-  //   ];
-
-  //   for (const wishlist of wishlists) {
-  //     await prisma.usersWishList.create({
-  //       data: wishlist,
-  //     });
-  //   }
 
   // Seeding Reviews
   const reviews = [
@@ -179,8 +199,6 @@ async function main() {
       data: review,
     });
   }
-
-  //   console.log('Seeding selesai');
 }
 
 main()

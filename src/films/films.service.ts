@@ -5,30 +5,30 @@ import {
 } from '@nestjs/common';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CloudflareService } from 'src/cloudflare/cloudflare.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { StorageService } from '../storage/storage.service';
 import { FilmResponseDto } from './dto/film-response.dto';
 import { Prisma } from '@prisma/client';
+import { RecommendationQueryBuilder } from './utils/RecommendationQueryBuilder';
+import { max } from 'class-validator';
 
 @Injectable()
 export class FilmsService {
   constructor(
     private prismaService: PrismaService,
-    private cloudflareService: CloudflareService,
+    private storageService: StorageService,
   ) {}
 
   async create(createFilmDto: CreateFilmDto) {
-    const videoUrl = await this.cloudflareService.uploadFile(
-      createFilmDto.video,
-    );
+    const videoUrl = await this.storageService.uploadFile(createFilmDto.video);
 
     if (!videoUrl) {
       throw new BadRequestException('Failed to upload video');
     }
 
-    let coverImageUrl = null;
+    let coverImageUrl = '/assets/no-image.webp';
     if (createFilmDto.cover_image) {
-      coverImageUrl = await this.cloudflareService.uploadFile(
+      coverImageUrl = await this.storageService.uploadFile(
         createFilmDto.cover_image,
       );
       if (!coverImageUrl) {
@@ -40,7 +40,7 @@ export class FilmsService {
     const director = await this.prismaService.director.upsert({
       where: { name: createFilmDto.director, director_id: 0 },
       update: {},
-      create: { name: createFilmDto.director },
+      create: { name: createFilmDto.director.toLocaleUpperCase() },
     });
 
     // Find or create genres
@@ -49,14 +49,14 @@ export class FilmsService {
         return await this.prismaService.genre.upsert({
           where: { name: genre, genre_id: 0 },
           update: {},
-          create: { name: genre },
+          create: { name: genre.toLocaleUpperCase() },
         });
       }),
     );
 
     const film = await this.prismaService.film.create({
       data: {
-        title: createFilmDto.title,
+        title: createFilmDto.title.toLocaleUpperCase(),
         description: createFilmDto.description,
         director_id: director.director_id,
         release_year: createFilmDto.release_year,
@@ -116,13 +116,17 @@ export class FilmsService {
       select: { video_url: true, cover_image_url: true },
     });
 
+    if (!film) {
+      throw new NotFoundException('Film not found');
+    }
+
     let videoUrl = film.video_url;
 
     if (updateFilmDto.video) {
-      this.cloudflareService.deleteFile(videoUrl);
+      this.storageService.deleteFile(videoUrl);
 
       videoUrl = null;
-      videoUrl = await this.cloudflareService.uploadFile(updateFilmDto.video);
+      videoUrl = await this.storageService.uploadFile(updateFilmDto.video);
 
       if (!film.video_url) {
         throw new BadRequestException('Failed to upload video');
@@ -132,10 +136,10 @@ export class FilmsService {
     let coverImageUrl = film.cover_image_url;
 
     if (updateFilmDto.cover_image) {
-      this.cloudflareService.deleteFile(coverImageUrl);
+      this.storageService.deleteFile(coverImageUrl);
 
       coverImageUrl = null;
-      coverImageUrl = await this.cloudflareService.uploadFile(
+      coverImageUrl = await this.storageService.uploadFile(
         updateFilmDto.cover_image,
       );
 
@@ -197,11 +201,11 @@ export class FilmsService {
     }
 
     if (film.video_url) {
-      this.cloudflareService.deleteFile(film.video_url);
+      this.storageService.deleteFile(film.video_url);
     }
 
     if (film.cover_image_url) {
-      this.cloudflareService.deleteFile(film.cover_image_url);
+      this.storageService.deleteFile(film.cover_image_url);
     }
 
     return new FilmResponseDto(
@@ -222,7 +226,9 @@ export class FilmsService {
     user_id?: string,
     isWishlisted: boolean = false,
   ) {
-    const skip = (page - 1) * limit;
+    page = page || 1;
+    q = q || '';
+    limit = limit || 9;
 
     const userCondition = user_id
       ? isWishlisted
@@ -242,7 +248,7 @@ export class FilmsService {
         where: {
           AND: [userCondition, searchCondition],
         },
-        skip,
+        skip: (page - 1) * limit,
         take: limit,
         include: { Director: true, genres: true },
       }),
@@ -260,57 +266,6 @@ export class FilmsService {
       page,
       limit,
     };
-  }
-
-  async addReview(
-    filmId: string,
-    star: number,
-    review: string,
-    user_id: string,
-  ) {
-    const film = await this.prismaService.film.findUnique({
-      where: { film_id: filmId },
-    });
-
-    if (!film) {
-      throw new NotFoundException('Film not found');
-    }
-    console.log(film);
-
-    const reviewResult = await this.prismaService.review.create({
-      data: {
-        comment: review,
-        star,
-        user_id: user_id,
-        film_id: filmId,
-      },
-    });
-
-    console.log(reviewResult);
-
-    return reviewResult;
-  }
-
-  async getReviewswithPagination(
-    filmId: string,
-    page: number = 1,
-    limit: number = 5,
-  ) {
-    // Select reviews for the film with username and exclude user id and film id
-    const reviews = await this.prismaService.review.findMany({
-      where: { film_id: filmId },
-      select: {
-        star: true,
-        comment: true,
-        created_at: true,
-        User: { select: { username: true } },
-      },
-      orderBy: { created_at: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-
-    return reviews;
   }
 
   async buyFilm(filmId: string, user_id: string) {
@@ -436,59 +391,25 @@ export class FilmsService {
       },
     });
 
-    const ids = new Set<string>();
-    const genres = new Set<number>();
-    const directors = new Set<number>();
+    const recommendationBuilder = new RecommendationQueryBuilder();
 
     user.filmWishList.forEach((film) => {
-      ids.add(film.film_id);
+      recommendationBuilder.excludeFilmIds([film.film_id]);
     });
 
     user.filmBought.forEach((film) => {
-      ids.add(film.film_id);
-      film.genres.forEach((genre) => {
-        genres.add(genre.genre_id);
-      });
-      directors.add(film.Director.director_id);
+      recommendationBuilder
+        .excludeFilmIds([film.film_id])
+        .addGenres(film.genres.map((genre) => genre.genre_id))
+        .addDirectors([film.Director.director_id]);
     });
 
     const films = await this.prismaService.film.findMany({
-      where: {
-        AND: [
-          {
-            OR: [
-              {
-                genres: {
-                  some: {
-                    genre_id: {
-                      in: [...genres],
-                    },
-                  },
-                },
-              },
-              {
-                Director: {
-                  director_id: {
-                    in: [...directors],
-                  },
-                },
-              },
-            ],
-          },
-          {
-            NOT: {
-              film_id: {
-                in: [...ids],
-              },
-            },
-          },
-        ],
-      },
+      ...recommendationBuilder.build(),
       include: {
-        Director: true,
         genres: true,
+        Director: true,
       },
-      take: 9,
     });
 
     return films.map((film) => new FilmResponseDto(film));

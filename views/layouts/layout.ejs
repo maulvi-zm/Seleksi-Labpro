@@ -4,33 +4,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Stream Vibe - Your streaming platform" />
   <title>Stream Vibe</title>
+  <link rel="preload" href="/stylesheet/output.css" as="style" />
   <link rel="stylesheet" href="/stylesheet/output.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" />
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js"></script>
-
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" as="style" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/themes/light.css" media="print" onload="this.media='all'" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.16.0/cdn/shoelace-autoloader.js" defer></script>
+  <style>
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #141414;
+      margin: 0;
+      min-height: 100vh;
+    }
+  </style>
   <% if (data && data.scripts !== undefined) { data.scripts.forEach (script => { %>
-  <script src="/scripts/<%= script %>"></script>
+  <script src="/scripts/<%= script %>" defer></script>
   <% })} %>
 </head>
 
-<body class="bg-[#141414] min-h-[100svh] m-0 font-manrope">
-
+<body>
   <%- include('../partials/header.ejs') %>
-
-  <main class="w-full min-h-[100svh] max-w-full overflow-hidden">
-    <%- body %>
+  <main class="w-full h-full min-h-screen max-w-full overflow-hidden flex flex-col">
+    <div class="flex-grow">
+      <%- body %>
+    </div>
   </main>
-
   <%- include('../partials/footer.ejs') %>
-
   <% if (status === 'error') { %>
-    <script>
-      alert('<%= message %>');
-    </script>
+  <script>
+    alert('<%= message %>');
+  </script>
   <% } %>
 </body>
 
