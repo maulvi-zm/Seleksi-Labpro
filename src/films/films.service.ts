@@ -40,7 +40,7 @@ export class FilmsService {
     const director = await this.prismaService.director.upsert({
       where: { name: createFilmDto.director, director_id: 0 },
       update: {},
-      create: { name: createFilmDto.director },
+      create: { name: createFilmDto.director.toLocaleUpperCase() },
     });
 
     // Find or create genres
@@ -49,14 +49,14 @@ export class FilmsService {
         return await this.prismaService.genre.upsert({
           where: { name: genre, genre_id: 0 },
           update: {},
-          create: { name: genre },
+          create: { name: genre.toLocaleUpperCase() },
         });
       }),
     );
 
     const film = await this.prismaService.film.create({
       data: {
-        title: createFilmDto.title,
+        title: createFilmDto.title.toLocaleUpperCase(),
         description: createFilmDto.description,
         director_id: director.director_id,
         release_year: createFilmDto.release_year,
