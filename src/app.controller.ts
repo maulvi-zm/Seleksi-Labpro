@@ -22,7 +22,7 @@ import { CreateUserDto } from './users/dto/create-user.dto';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { DynamicCacheInterceptor } from './common/interceptors/DynamicCacheInterceptor';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { CacheTTL } from '@nestjs/cache-manager';
 import { ReviewsService } from './reviews/reviews.service';
 
 @ApiExcludeController()
@@ -101,7 +101,13 @@ export class AppController {
         res.redirect('/login');
       }
     } catch (error) {
-      res.render('register', { message: error.message, status: 'error' });
+      res.render('register', {
+        message: error.message,
+        status: 'error',
+        data: {
+          scripts: ['register.js'],
+        },
+      });
     }
   }
 

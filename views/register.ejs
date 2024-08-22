@@ -26,9 +26,11 @@
       ></sl-input>
       <sl-input
         label="Username"
-        help-text="Please fill your username"
+        help-text="Please fill your username, only alphanumeric and underscore, at least 3 characters"
         required
         name="username"
+        minlength="3"
+        pattern="^[a-zA-Z0-9_]{3,}$"
       ></sl-input>
       <div class="grid grid-cols-2 space-x-4">
         <sl-input
@@ -46,14 +48,14 @@
       </div>
       <sl-input
         label="Password"
-        help-text="Please fill your password"
+        help-text="Please fill your password, at least 8 characters"
         type="password"
         required
         name="password"
         minlength="8"
       ></sl-input>
       <sl-input
-        label="Password"
+        label="Password Confirmation"
         help-text="Please retype your password"
         type="password"
         required
