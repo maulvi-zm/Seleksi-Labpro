@@ -141,11 +141,12 @@
           <sl-icon name="star" class="text-[#999999]"></sl-icon>
           <h2 class="text-[#999999]">Ratings</h2>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
           <sl-rating label="Rating" readonly value="<%= data.average_star %>" precision></sl-rating>
-          <span class="text-white text-sm">
+          <p class="text-white text-sm">
+            <%= data.average_star.toFixed(2) %>
             (<%= data.review_count %>)
-          </span>
+          </p>
         </div>
       </div>
       <div class="space-y-2">

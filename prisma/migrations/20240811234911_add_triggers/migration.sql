@@ -8,12 +8,21 @@ DROP FUNCTION IF EXISTS update_film_rating;
 CREATE OR REPLACE FUNCTION update_film_rating()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE "Film"
-  SET
-    average_star = (SELECT COALESCE(AVG(star), 0) FROM "Review" WHERE film_id = NEW.film_id),
-    review_count = (SELECT COUNT(*) FROM "Review" WHERE film_id = NEW.film_id)
-  WHERE film_id = NEW.film_id;
-  RETURN NEW;
+  IF (TG_OP = 'DELETE') THEN
+    UPDATE "Film"
+    SET
+      average_star = (SELECT COALESCE(AVG(star), 0) FROM "Review" WHERE film_id = OLD.film_id),
+      review_count = (SELECT COUNT(*) FROM "Review" WHERE film_id = OLD.film_id)
+    WHERE film_id = OLD.film_id;
+  ELSE
+    UPDATE "Film"
+    SET
+      average_star = (SELECT COALESCE(AVG(star), 0) FROM "Review" WHERE film_id = NEW.film_id),
+      review_count = (SELECT COUNT(*) FROM "Review" WHERE film_id = NEW.film_id)
+    WHERE film_id = NEW.film_id;
+  END IF;
+  
+  RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
