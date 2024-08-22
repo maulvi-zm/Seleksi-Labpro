@@ -11,7 +11,7 @@
         </div>
         <div class="flex gap-2 items-center">
           <% if (review.owned) { %>
-            <button type="submit" name="trash3" label="Delete Review" class="text-red-700" onclick="deleteReview('<%= review.review_id %>')">
+            <button type="submit" name="trash3" label="Delete Review" class="text-red-700 flex items-center" onclick="deleteReview('<%= review.review_id %>')">
               <sl-icon name="trash3"></sl-icon>
             </button>
           <% } %>
