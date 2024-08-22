@@ -129,7 +129,12 @@ export class AppController {
       limit,
     );
 
+    const recommendations = req.user
+      ? await this.filmsService.getRecommendedFilms(req.user.id)
+      : null;
+
     return {
+      recommendations,
       isAuthenticated,
       ...filmsData,
       scripts: ['films.js'],
@@ -147,7 +152,7 @@ export class AppController {
     @Query('limit') limit: number = 9,
   ): Promise<object> {
     const { isWishlist, userId } = this.extractUserInfo(req);
-
+    const isAuthenticated = req.cookies.token ? true : false;
     const filmsData = await this.filmsService.findAllwithPagination(
       q,
       page,
@@ -161,7 +166,8 @@ export class AppController {
     );
 
     return {
-      recommendations: recommendations,
+      recommendations,
+      isAuthenticated,
       ...filmsData,
       scripts: ['films.js'],
     };

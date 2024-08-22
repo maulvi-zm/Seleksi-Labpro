@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 
@@ -22,9 +22,9 @@ export class ReviewsController {
 
   @Post(':film_id')
   @ApiOperation({ summary: 'Add a review' })
-  @ApiResponse({ status: 201, description: 'Review added successfully' })
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @FormDataRequest({ storage: MemoryStoredFile })
   addReview(
     @Param('film_id') id: string,
@@ -40,9 +40,9 @@ export class ReviewsController {
 
   @Get(':film_id')
   @ApiOperation({ summary: 'Get reviews with pagination' })
-  @ApiResponse({ status: 200, description: 'Return reviews with pagination' })
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @FormDataRequest({ storage: MemoryStoredFile })
   @Render('partials/reviews')
   getReview(
@@ -63,8 +63,8 @@ export class ReviewsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a review' })
-  @ApiResponse({ status: 200, description: 'Review deleted successfully' })
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   deleteReview(@Param('id') id: string, @Req() req: any) {
     return this.reviewsService.deleteReview(parseInt(id), req.user.id);
   }

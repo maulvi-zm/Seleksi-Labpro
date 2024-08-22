@@ -4,7 +4,6 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
   ApiBody,
   ApiConsumes,
   ApiQuery,
@@ -35,7 +34,6 @@ export class FilmsController {
 
   @Post('api/films')
   @ApiOperation({ summary: 'Create a film' })
-  @ApiResponse({ status: 201, description: 'Film created successfully' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     required: true,
@@ -50,13 +48,13 @@ export class FilmsController {
   }
 
   @ApiOperation({ summary: 'Get all films' })
-  @ApiResponse({ status: 200, description: 'Return all films' })
   @ApiQuery({
     name: 'q',
     required: false,
     description: 'Query string for searching films by title or director',
   })
   @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @Get('api/films')
   findAll(@Query('q') q: string) {
@@ -64,7 +62,6 @@ export class FilmsController {
   }
 
   @ApiOperation({ summary: 'Get a film by ID' })
-  @ApiResponse({ status: 200, description: 'Return the film' })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('api/films/:id')
@@ -74,7 +71,6 @@ export class FilmsController {
 
   @Put('api/films/:id')
   @ApiOperation({ summary: 'Update a film' })
-  @ApiResponse({ status: 201, description: 'Film created successfully' })
   @ApiConsumes('multipart/form-data')
   @FormDataRequest({ storage: MemoryStoredFile })
   @ApiBody({
@@ -89,7 +85,6 @@ export class FilmsController {
   }
 
   @ApiOperation({ summary: 'Delete a film' })
-  @ApiResponse({ status: 200, description: 'Film deleted successfully' })
   @Delete('api/films/:id')
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -100,7 +95,7 @@ export class FilmsController {
 
   @Post('films/:id/buy')
   @ApiOperation({ summary: 'Buy a film' })
-  @ApiResponse({ status: 201, description: 'Film bought successfully' })
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   buyFilm(@Param('id') id: string, @Req() req: any): object {
     if (req.headers.referer.split('/').pop() !== id) {
@@ -112,11 +107,8 @@ export class FilmsController {
 
   @Post('films/:id/wishlist')
   @ApiOperation({ summary: 'Add a film to wishlist' })
-  @ApiResponse({
-    status: 201,
-    description: 'Film added to wishlist successfully',
-  })
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   addWishlist(@Param('id') id: string, @Req() req: any): object {
     if (req.headers.referer.split('/').pop() !== id) {
       throw new Error('Invalid request');
