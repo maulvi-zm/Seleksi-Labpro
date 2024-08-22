@@ -13,4 +13,4 @@ function fetchFilms() {
     .catch((error) => console.error('Error fetching films:', error));
 }
 
-setInterval(fetchFilms, 30000);
+setInterval(fetchFilms, 60000);

@@ -62,11 +62,7 @@ export class AppModule implements NestModule {
         { path: 'logout', method: RequestMethod.GET },
         { path: 'films', method: RequestMethod.ALL },
         { path: 'my-films', method: RequestMethod.ALL },
-      )
-      .apply(UserMiddleware)
-      .forRoutes({
-        path: 'films/:id',
-        method: RequestMethod.ALL,
-      });
+      );
+    consumer.apply(UserMiddleware).forRoutes('*');
   }
 }

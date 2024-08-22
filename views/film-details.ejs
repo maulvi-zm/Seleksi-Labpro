@@ -10,85 +10,85 @@
     </div>
     <div class="flex gap-4">
       <% if ( data.isAuthenticated) {%>
-        <% if (data.isPurchased) { %>
-          <a href="/films/<%= data.id %>/watch">
-            <button id='playButton' class="px-4 py-2 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
-              <sl-icon name='play' class="text-xl"></sl-icon>
-              <span>
-                Play Now
-              </span>
-            </button>
-          </a>
-          <% } else { %>
-          <button id="buyButton" class="px-4 py-1 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
-            <sl-icon name='bag' class="text-xl"></sl-icon>
-            <span>
-              Buy Now
-            </span>
-          </button>
-          <script>
-            const buyButton = document.getElementById('buyButton');
-    
-            buyButton.addEventListener('click', async () => {
-              try {
-                const response = await fetch('/films/<%= data.id %>/buy', {
-                  method: 'POST',
-                });
-                const data = await response.json();
-                if (data.status === 'success') {
-                  alert('Purchase successful!');
-                  location.reload();
-                } else {
-                  alert('Purchase failed.');
-                }
-              } catch (error) {
-                console.error('Error purchasing video:', error);
-                alert('An error occurred.');
-              }
+      <% if (data.isPurchased) { %>
+      <a href="/films/<%= data.id %>/watch">
+        <button id='playButton' class="px-4 py-2 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
+          <sl-icon name='play' class="text-xl"></sl-icon>
+          <span>
+            Play Now
+          </span>
+        </button>
+      </a>
+      <% } else { %>
+      <button id="buyButton" class="px-4 py-1 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
+        <sl-icon name='bag' class="text-xl"></sl-icon>
+        <span>
+          Buy Now
+        </span>
+      </button>
+      <script>
+        const buyButton = document.getElementById('buyButton');
+
+        buyButton.addEventListener('click', async () => {
+          try {
+            const response = await fetch('/films/<%= data.id %>/buy', {
+              method: 'POST',
             });
-          </script>
-          <% } %>
-          <button id="wishlistButton" class="px-1 py-1 <% if (data.isWishlisted) {%> bg-red-700 <% } else { %> bg-black <% } %> border border-[#262626] rounded-lg flex items-center justify-center transition-all">
-            <sl-icon name="<%  if (data.isWishlisted) { %>check<% } else { %>plus<% } %>" class="text-3xl text-white" id="wishlistIcon"></sl-icon>
-          </button>
-    
-          <script>
-            const wishlistButton = document.getElementById('wishlistButton');
-            const wishlistIcon = document.getElementById('wishlistIcon');
-    
-            wishlistButton.addEventListener('click', async () => {
-              try {
-                const response = await fetch('<%= data.id %>/wishlist', {
-                  method: 'POST',
-                });
-    
-                const result = await response.json();
-    
-                if (result.data) {
-                  wishlistIcon.name = 'check';
-                  wishlistButton.classList.add('bg-red-700');
-                  wishlistButton.classList.remove('bg-black');
-                } else {
-                  wishlistIcon.name = 'plus';
-                  wishlistButton.classList.remove('bg-red-700');
-                  wishlistButton.classList.add('bg-black');
-                }
-              } catch (error) {
-                console.error('Error adding to wishlist:', error);
-                alert('An error occurred.');
-              }
+            const data = await response.json();
+            if (data.status === 'success') {
+              alert('Purchase successful!');
+              location.reload();
+            } else {
+              alert('Purchase failed.');
+            }
+          } catch (error) {
+            console.error('Error purchasing video:', error);
+            alert('An error occurred.');
+          }
+        });
+      </script>
+      <% } %>
+      <button id="wishlistButton" class="px-1 py-1 <% if (data.isWishlisted) {%> bg-red-700 <% } else { %> bg-black <% } %> border border-[#262626] rounded-lg flex items-center justify-center transition-all">
+        <sl-icon name="<%  if (data.isWishlisted) { %>check<% } else { %>plus<% } %>" class="text-3xl text-white" id="wishlistIcon"></sl-icon>
+      </button>
+
+      <script>
+        const wishlistButton = document.getElementById('wishlistButton');
+        const wishlistIcon = document.getElementById('wishlistIcon');
+
+        wishlistButton.addEventListener('click', async () => {
+          try {
+            const response = await fetch('<%= data.id %>/wishlist', {
+              method: 'POST',
             });
-          </script>
-          <% } else { %>
-          <a href="/login">
-            <button class="px-4 py-2 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
-              <sl-icon name='lock' class="text-xl"></sl-icon>
-              <span>
-                Login to Watch
-              </span>
-            </button>
-          </a>
-          <% } %>
+
+            const result = await response.json();
+
+            if (result.data) {
+              wishlistIcon.name = 'check';
+              wishlistButton.classList.add('bg-red-700');
+              wishlistButton.classList.remove('bg-black');
+            } else {
+              wishlistIcon.name = 'plus';
+              wishlistButton.classList.remove('bg-red-700');
+              wishlistButton.classList.add('bg-black');
+            }
+          } catch (error) {
+            console.error('Error adding to wishlist:', error);
+            alert('An error occurred.');
+          }
+        });
+      </script>
+      <% } else { %>
+      <a href="/login">
+        <button class="px-4 py-2 bg-red-700 hover:brightness-125 rounded-lg flex items-center gap-2">
+          <sl-icon name='lock' class="text-xl"></sl-icon>
+          <span>
+            Login to Watch
+          </span>
+        </button>
+      </a>
+      <% } %>
     </div>
   </div>
   <div class="flex flex-col-reverse md:flex-row w-full gap-8">

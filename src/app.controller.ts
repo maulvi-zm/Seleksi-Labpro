@@ -61,7 +61,7 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   async logout(@Res() res) {
     res.clearCookie('token');
-    res.redirect('/login');
+    res.redirect('/');
   }
 
   @Get('register')
@@ -162,7 +162,6 @@ export class AppController {
   }
 
   @Get('films/:id')
-  @UseInterceptors(CacheInterceptor)
   @Render('film-details')
   async getFilm(@Param('id') id: string, @Req() req): Promise<object> {
     const film = await this.filmsService.findOne(id);
