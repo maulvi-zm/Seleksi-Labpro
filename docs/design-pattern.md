@@ -14,7 +14,7 @@ Using the Strategy Pattern allows the application to be easily extendable and ma
 
 ## 2. Builder Pattern
 
-The **Builder Pattern** is implemented in the `RecommendationQueryBuilder` class. This pattern allows for constructing complex queries step by step, providing a flexible way to add or exclude genres, directors, or film IDs from the query. It encapsulates the construction logic of the `Prisma.FilmFindManyArgs` object, making the code more readable and maintainable.
+The **Builder Pattern** is implemented in the `RecommendationQueryBuilder` class. This pattern allows for constructing complex queries step by step, providing a flexible way to add or exclude genres, directors, or film IDs from the query. It also makes the code more readable and maintainable.
 
 ### Why Builder Pattern?
 
@@ -22,7 +22,7 @@ The Builder Pattern is particularly useful in scenarios where an object requires
 
 ## 3. Singleton Pattern
 
-The **Singleton Pattern** is implemented by default in NestJS for services and modules, which ensures that a single instance of each service is created and shared across the entire application. This pattern is crucial for scenarios where centralized management of resources is required, such as configuration services, caching mechanisms, or database connections.
+The **Singleton Pattern** is implemented by default in NestJS for services and modules, which ensures that a single instance of each service is created and shared across the entire application. This pattern is crucial for scenarios where centralized management of resources is required, such as configuration services, caching mechanisms, and database connections so that there only 1 database connection from the application.
 
 ### Why Singleton Pattern?
 

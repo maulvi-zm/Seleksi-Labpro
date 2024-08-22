@@ -18,7 +18,7 @@ StreamVibe is a cutting-edge movie streaming platform built with modern technolo
 
 </div>
 
-## Running the App
+## Running the App for Development
 
 1. Initialize Docker
 
@@ -47,6 +47,10 @@ $ docker exec -it <container_id_or_name> npx prisma migrate reset --force
 $ npm run test
 ```
 
+## Deployment
+
+This application has been deployed to [https://seleksi-labpro-538a79323cdf.herokuapp.com/films](https://seleksi-labpro-538a79323cdf.herokuapp.com/films).
+
 ## Design Pattern
 
 For a detailed explanation about the design pattern, please refer to [design pattern explanation](/docs/design-pattern.md).
@@ -64,7 +68,7 @@ For a detailed explanation about the design pattern, please refer to [design pat
 
 ## Endpoints
 
-For a detailed explanation about the endpoints, please refer to [API documentation](/docs/endpoints.md).
+For a detailed explanation about the endpoints, please refer to [API documentation](/docs/endpoints.md) or go to `/api` in the application to open swagger documentation.
 
 ## Bonus
 
