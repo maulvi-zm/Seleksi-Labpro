@@ -40,18 +40,19 @@ export class UsersController {
   }
 
   @Get('api/users')
+  @ApiOperation({ summary: 'Get all users' })
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all users' })
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get('api/users/:id')
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get a user by ID' })
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
@@ -73,6 +74,7 @@ export class UsersController {
   })
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
   increaseBalance(
     @Param('id') id: string,
     @Body() { increment }: { increment: number },
